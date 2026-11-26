@@ -832,7 +832,7 @@
             <div class="notes-container">
                 <div class="notes-status-bar" id="notesStatus">ИНИЦИАЛИЗАЦИЯ...</div>
                 <div class="notes-connect hidden" id="notesConnectBox">
-                    <p>Заметки хранятся во внешнем текстовом файле (рекомендуется <strong>notes.txt</strong> рядом с waste2.html).<br>
+                    <p>Заметки хранятся во внешнем текстовом файле (рекомендуется <strong>notes.txt</strong> рядом с index.html).<br>
                     Подключите файл один раз — дальше он будет подхватываться автоматически.</p>
                     <div class="notes-connect-btns">
                         <button onclick="connectOpenNotesFile()">📂 ОТКРЫТЬ ФАЙЛ</button>
@@ -1115,7 +1115,7 @@
             }
         });
 
-        // --- 6. MASTER NOTES (внешний файл рядом с waste2.html) ---
+        // --- 6. MASTER NOTES (внешний файл рядом с index.html) ---
         const NOTES_LS_KEY = 'waste_gm_notes_local';
         const notesFsSupported = 'showOpenFilePicker' in window;
         let notesFileHandle = null;
@@ -1314,7 +1314,7 @@
                 setNotesStatus('ФАЙЛ: ' + h.name + ' — ПОДКЛЮЧЁН');
             } catch (e) {
                 if (e.name !== 'AbortError')
-                    setNotesStatus('ОШИБКА ПОДКЛЮЧЕНИЯ. Откройте waste2.html в Chrome/Edge и попробуйте снова. (' + e.message + ')');
+                    setNotesStatus('ОШИБКА ПОДКЛЮЧЕНИЯ. Откройте index.html в Chrome/Edge и попробуйте снова. (' + e.message + ')');
             }
         }
 
@@ -1333,7 +1333,7 @@
                 setNotesStatus('ФАЙЛ: ' + h.name + ' — ПОДКЛЮЧЁН');
             } catch (e) {
                 if (e.name !== 'AbortError')
-                    setNotesStatus('ОШИБКА СОЗДАНИЯ. Откройте waste2.html в Chrome/Edge и попробуйте снова. (' + e.message + ')');
+                    setNotesStatus('ОШИБКА СОЗДАНИЯ. Откройте index.html в Chrome/Edge и попробуйте снова. (' + e.message + ')');
             }
         }
 
