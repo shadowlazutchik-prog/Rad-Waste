@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="63 82 382 182" width="600" height="300" preserveAspectRatio="xMidYMid meet" role="img">
+
+  <defs>
+    <!-- Металл -->
+    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#9a9a92"/>
+      <stop offset="0.18" stop-color="#6e6f68"/>
+      <stop offset="0.55" stop-color="#4a4b45"/>
+      <stop offset="0.8"  stop-color="#3a3b36"/>
+      <stop offset="1"   stop-color="#232420"/>
+    </linearGradient>
+    <linearGradient id="steelDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#6a6b64"/>
+      <stop offset="0.3" stop-color="#45463f"/>
+      <stop offset="0.75" stop-color="#2c2d28"/>
+      <stop offset="1"   stop-color="#171814"/>
+    </linearGradient>
+    <linearGradient id="steelLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#c9c8bd"/>
+      <stop offset="0.35" stop-color="#8e8f86"/>
+      <stop offset="0.7"  stop-color="#5b5c55"/>
+      <stop offset="1"   stop-color="#2f302b"/>
+    </linearGradient>
+    <linearGradient id="rust" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#a1653a"/>
+      <stop offset="0.45" stop-color="#7a4a28"/>
+      <stop offset="1"   stop-color="#4a2b17"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#b99a52"/>
+      <stop offset="0.5" stop-color="#8d7134"/>
+      <stop offset="1"   stop-color="#5a4720"/>
+    </linearGradient>
+    <!-- Дерево -->
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#8a5a34"/>
+      <stop offset="0.4" stop-color="#6b4325"/>
+      <stop offset="0.78" stop-color="#4a2d18"/>
+      <stop offset="1"   stop-color="#2e1c0f"/>
+    </linearGradient>
+    <linearGradient id="woodDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#5e3d22"/>
+      <stop offset="0.5" stop-color="#432b17"/>
+      <stop offset="1"   stop-color="#25160b"/>
+    </linearGradient>
+    <!-- Изолента / тряпьё -->
+    <linearGradient id="tape" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#4a4a44"/>
+      <stop offset="0.5" stop-color="#33332e"/>
+      <stop offset="1"   stop-color="#1d1d19"/>
+    </linearGradient>
+    <linearGradient id="cloth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#7d7357"/>
+      <stop offset="0.5" stop-color="#5d5540"/>
+      <stop offset="1"   stop-color="#3a3428"/>
+    </linearGradient>
+    <!-- Свечение -->
+    <radialGradient id="glowBlue" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0"   stop-color="#bfeaff" stop-opacity="0.95"/>
+      <stop offset="0.4" stop-color="#4aa8e0" stop-opacity="0.75"/>
+      <stop offset="1"   stop-color="#123a55" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowCyan" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0"   stop-color="#d8fff6" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#43d9b5" stop-opacity="0.7"/>
+      <stop offset="1"   stop-color="#0d3a30" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowRed" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0"   stop-color="#ffd3c6" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#d0432a" stop-opacity="0.7"/>
+      <stop offset="1"   stop-color="#3a0d06" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ржавая крапинка: накладывается поверх металла -->
+    <filter id="grunge" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55 0.75" numOctaves="3" seed="7" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+      <feComponentTransfer in="gray" result="spots">
+        <feFuncA type="table" tableValues="0 0 0 0.55 0.9"/>
+      </feComponentTransfer>
+      <feComposite in="spots" in2="SourceAlpha" operator="in" result="masked"/>
+      <feFlood flood-color="#5b3418" result="rust"/>
+      <feComposite in="rust" in2="masked" operator="in" result="rustOn"/>
+      <feMerge>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="rustOn"/>
+      </feMerge>
+    </filter>
+
+    <!-- Мягкая тень под оружием -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.65"/>
+    </filter>
+
+    <!-- Царапины -->
+    <pattern id="scratches" width="46" height="34" patternUnits="userSpaceOnUse">
+      <path d="M4 8 l14 -3" stroke="#cfd0c6" stroke-opacity="0.16" stroke-width="1.2"/>
+      <path d="M28 22 l11 2" stroke="#e8e9df" stroke-opacity="0.12" stroke-width="1"/>
+      <path d="M12 28 l6 -9" stroke="#000" stroke-opacity="0.22" stroke-width="1.3"/>
+    </pattern>
+
+    <!-- Патина: объём по краю + ржавая крапина, без серого налёта -->
+    <filter id="patina" x="-12%" y="-12%" width="124%" height="124%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="b"/>
+      <feOffset in="b" dy="-2.2" result="bUp"/>
+      <feComposite in="SourceAlpha" in2="bUp" operator="out" result="edgeUp"/>
+      <feGaussianBlur in="edgeUp" stdDeviation="1.2" result="edgeUpS"/>
+      <feFlood flood-color="#fff8e6" flood-opacity="0.62" result="lit"/>
+      <feComposite in="lit" in2="edgeUpS" operator="in" result="litMasked"/>
+
+      <feOffset in="b" dy="2.6" result="bDn"/>
+      <feComposite in="SourceAlpha" in2="bDn" operator="out" result="edgeDn"/>
+      <feGaussianBlur in="edgeDn" stdDeviation="1.8" result="edgeDnS"/>
+      <feFlood flood-color="#060402" flood-opacity="0.78" result="dark"/>
+      <feComposite in="dark" in2="edgeDnS" operator="in" result="darkMasked"/>
+
+      <!-- ржавые вкрапления строго внутри силуэта -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.09 0.14" numOctaves="4" seed="11" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" result="noiseA"
+        values="0 0 0 0 0.26  0 0 0 0 0.13  0 0 0 0 0.05  -2.6 0 0 0 1.62"/>
+      <feComposite in="noiseA" in2="SourceAlpha" operator="in" result="noiseIn"/>
+      <feComposite in="SourceGraphic" in2="noiseIn" operator="over" result="grained"/>
+
+      <!-- насыщенность и контраст -->
+      <feComponentTransfer in="grained" result="punchy">
+        <feFuncR type="linear" slope="1.16" intercept="-0.03"/>
+        <feFuncG type="linear" slope="1.12" intercept="-0.025"/>
+        <feFuncB type="linear" slope="1.04" intercept="-0.01"/>
+      </feComponentTransfer>
+
+      <feMerge>
+        <feMergeNode in="punchy"/>
+        <feMergeNode in="darkMasked"/>
+        <feMergeNode in="litMasked"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+<g filter="url(#patina)" style="filter:url(#patina)">
+<g filter="url(#grunge)"><rect x="196" y="118" width="188" height="74" rx="10" fill="url(#steel)"/><rect x="196" y="118" width="188" height="12" rx="6" fill="#b4b5aa" opacity="0.35"/><circle cx="402" cy="155" r="52" fill="url(#steelDark)"/><circle cx="402" cy="155" r="38" fill="#2a2b25"/><circle cx="402" cy="155" r="30" fill="url(#steel)"/><circle cx="402" cy="155" r="9" fill="#14150f"/><circle cx="434.8" cy="163.8" r="7" fill="#1b1c16"/><circle cx="434.8" cy="163.8" r="3.4" fill="url(#brass)"/><circle cx="410.8" cy="187.8" r="7" fill="#1b1c16"/><circle cx="410.8" cy="187.8" r="3.4" fill="url(#brass)"/><circle cx="378.0" cy="179.0" r="7" fill="#1b1c16"/><circle cx="378.0" cy="179.0" r="3.4" fill="url(#brass)"/><circle cx="369.2" cy="146.2" r="7" fill="#1b1c16"/><circle cx="369.2" cy="146.2" r="3.4" fill="url(#brass)"/><circle cx="393.2" cy="122.2" r="7" fill="#1b1c16"/><circle cx="393.2" cy="122.2" r="3.4" fill="url(#brass)"/><circle cx="426.0" cy="131.0" r="7" fill="#1b1c16"/><circle cx="426.0" cy="131.0" r="3.4" fill="url(#brass)"/><rect x="96" y="136" width="112" height="40" rx="7" fill="url(#steelDark)"/><rect x="96" y="136" width="112" height="8" rx="4" fill="#8d8e85" opacity="0.45"/><ellipse cx="98" cy="156" rx="9" ry="20" fill="#111208"/><ellipse cx="98" cy="156" rx="9" ry="20" fill="none" stroke="#6f7067" stroke-width="4"/><rect x="124" y="142" width="10" height="28" rx="4" fill="#16170f" opacity="0.8"/><rect x="144" y="142" width="10" height="28" rx="4" fill="#16170f" opacity="0.8"/><rect x="164" y="142" width="10" height="28" rx="4" fill="#16170f" opacity="0.8"/><rect x="184" y="142" width="10" height="28" rx="4" fill="#16170f" opacity="0.8"/><path d="M300 190 l30 4 -6 62 -30 -4 z" fill="url(#woodDark)"/><path d="M303 200 l24 3 M301 214 l24 3 M299 228 l24 3" stroke="#1c1109" stroke-width="2.4" opacity="0.65"/><rect x="296" y="188" width="36" height="9" rx="3" fill="#2c2d27"/><path d="M344 196 q4 26 24 24" fill="none" stroke="#2a2b26" stroke-width="5" stroke-linecap="round"/><rect x="236" y="100" width="52" height="20" rx="5" fill="url(#steelLight)"/><rect x="246" y="104" width="32" height="12" rx="3" fill="#0d1208"/><rect x="236" y="100" width="52" height="5" rx="2" fill="#d0d1c6" opacity="0.4"/><path d="M214 192 q30 66 -6 74" fill="none" stroke="url(#cloth)" stroke-width="11" stroke-linecap="round" opacity="0.9"/><circle cx="214" cy="128" r="2.4" fill="#20211d"/>
+<circle cx="213.4" cy="127.3" r="1.008" fill="#b9bab0" opacity="0.55"/>
+<circle cx="240" cy="128" r="2.4" fill="#20211d"/>
+<circle cx="239.4" cy="127.3" r="1.008" fill="#b9bab0" opacity="0.55"/>
+<circle cx="266" cy="128" r="2.4" fill="#20211d"/>
+<circle cx="265.4" cy="127.3" r="1.008" fill="#b9bab0" opacity="0.55"/>
+<circle cx="292" cy="128" r="2.4" fill="#20211d"/>
+<circle cx="291.4" cy="127.3" r="1.008" fill="#b9bab0" opacity="0.55"/>
+<circle cx="318" cy="128" r="2.4" fill="#20211d"/>
+<circle cx="317.4" cy="127.3" r="1.008" fill="#b9bab0" opacity="0.55"/>
+<circle cx="344" cy="128" r="2.4" fill="#20211d"/>
+<circle cx="343.4" cy="127.3" r="1.008" fill="#b9bab0" opacity="0.55"/>
+<circle cx="370" cy="128" r="2.4" fill="#20211d"/>
+<circle cx="369.4" cy="127.3" r="1.008" fill="#b9bab0" opacity="0.55"/></g><rect x="196" y="118" width="188" height="74" fill="url(#scratches)" opacity="0.55"/>
+</g>
+</svg>

@@ -966,15 +966,19 @@
                 `<h4>СЕКТОР ${r + 1}-${c + 1}: ${terrainNames[terrain]}</h4><p>${terrainDescs[terrain]}</p>`;
         }
 
-        // --- SPRITES ОРУЖИЯ: картинки из папки Weapons/<ключ>.webp (или .png) ---
+        // --- SPRITES ОРУЖИЯ: картинки из папки Weapons/<ключ>.<ext> ---
         const weaponSpriteKeys = ['pipe','obrez','bat','laserp','chainsaw','crossbow','rifle','flamethrower','machete','kuvarda','sniper','grenade','taser','katana','smg','spear','rocket','tesak','drobovik','impulse'];
-        const WEAPON_IMG_EXT = 'webp';
+        // Порядок поиска файла: сначала растровый арт, затем векторный, в конце — эмодзи
+        const WEAPON_IMG_EXTS = ['webp', 'png', 'svg'];
 
-        // Если арта нет (webp/png отсутствуют) — показываем эмодзи, карточка не ломается
+        // Пробуем расширения по очереди; если ни одного файла нет — показываем эмодзи
         function weaponImg(key, emoji) {
             const fb = String(emoji || '🔫').replace(/'/g, '&#39;');
-            return `<img src="Weapons/${key}.${WEAPON_IMG_EXT}" alt="" draggable="false" loading="lazy"
-                onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src='Weapons/${key}.png';}else{this.outerHTML='<span class=\\'wc-noimg\\'>${fb}</span>';}">`;
+            const src = `Weapons/${key}.${WEAPON_IMG_EXTS[0]}`;
+            const chain = JSON.stringify(WEAPON_IMG_EXTS);
+            return `<img src="${src}" alt="" draggable="false" loading="lazy"
+                data-key="${key}" data-exts='${chain}' data-i="0"
+                onerror="var e=JSON.parse(this.dataset.exts),i=+this.dataset.i;if(i+1<e.length){this.dataset.i=i+1;this.src='Weapons/'+this.dataset.key+'.'+e[i+1];}else{this.outerHTML='<span class=&quot;wc-noimg&quot;>${fb}</span>';}">`;
         }
 
         // Карточка оружия в стиле инвентаря Fallout: арт на оливковой панели + стальная плашка с названием
