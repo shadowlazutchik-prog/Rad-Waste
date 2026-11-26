@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 232">
+<defs>
+<linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b97f47"/><stop offset=".55" stop-color="#8a5a30"/><stop offset="1" stop-color="#5d3a1e"/></linearGradient>
+<linearGradient id="woodD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7d5232"/><stop offset="1" stop-color="#432814"/></linearGradient>
+<linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef4f8"/><stop offset=".5" stop-color="#b0bcc5"/><stop offset="1" stop-color="#7c8790"/></linearGradient>
+<filter id="ds" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#000000" flood-opacity=".5"/></filter>
+</defs>
+<g filter="url(#ds)">
+<g transform="rotate(-20 256 116)">
+  <rect x="44" y="102" width="124" height="26" rx="13" fill="url(#woodD)" stroke="#11141a" stroke-width="6"/>
+  <rect x="52" y="98" width="24" height="34" rx="4" fill="#241a12" opacity=".85"/>
+  <path d="M160,96 C240,84 320,80 392,82 C424,83 444,96 444,115 C444,134 424,147 392,148 C320,150 240,146 160,134 Z" fill="url(#wood)" stroke="#11141a" stroke-width="6"/>
+  <path d="M200,104 C300,94 380,96 432,106" stroke="#5d3a1e" stroke-width="3" fill="none" opacity=".6"/>
+  <path d="M186,110 C280,102 370,102 428,112" stroke="#5d3a1e" stroke-width="2.5" fill="none" opacity=".4"/>
+  <path d="M180,102 C260,92 350,90 424,98" stroke="#ffffff" stroke-width="5" fill="none" opacity=".35" stroke-linecap="round"/>
+  <g fill="url(#steel)" stroke="#11141a" stroke-width="3">
+    <rect x="212" y="74" width="8" height="24" rx="3"/><circle cx="216" cy="71" r="6"/>
+    <rect x="260" y="70" width="8" height="24" rx="3"/><circle cx="264" cy="67" r="6"/>
+    <rect x="308" y="68" width="8" height="24" rx="3"/><circle cx="312" cy="65" r="6"/>
+    <rect x="354" y="68" width="8" height="24" rx="3"/><circle cx="358" cy="65" r="6"/>
+    <rect x="232" y="138" width="8" height="24" rx="3"/><circle cx="236" cy="165" r="6"/>
+    <rect x="282" y="141" width="8" height="24" rx="3"/><circle cx="286" cy="168" r="6"/>
+    <rect x="332" y="139" width="8" height="24" rx="3"/><circle cx="336" cy="166" r="6"/>
+  </g>
+</g>
+</g>
+</svg>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { margin: 0; background: #111; font-family: monospace; color: #ccc; }
+  .grid { display: grid; grid-template-columns: repeat(4, 256px); }
+  .cell { width: 256px; height: 116px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .cell img { width: 246px; height: 106px; }
+  .cell label { position: absolute; bottom: 1px; left: 4px; font-size: 10px; color: #888; }
+  #single { display: none; width: 1024px; height: 464px; }
+</style>
+</head>
+<body>
+<div class="grid" id="grid"></div>
+<img id="single">
+<script>
+const keys = ['pipe','obrez','bat','laserp','chainsaw','crossbow','rifle','flamethrower','machete','kuvarda','sniper','grenade','taser','katana','smg','spear','rocket','tesak','drobovik','impulse'];
+const i = new URLSearchParams(location.search).get('i');
+if (i === null) {
+  const g = document.getElementById('grid');
+  keys.forEach(k => {
+    const d = document.createElement('div');
+    d.className = 'cell';
+    d.innerHTML = `<img src="svg/${k}.svg"><label>${k}</label>`;
+    g.appendChild(d);
+  });
+} else {
+  document.getElementById('grid').style.display = 'none';
+  const s = document.getElementById('single');
+  s.style.display = 'block';
+  s.src = 'svg/' + keys[+i] + '.svg';
+  document.title = keys[+i];
+}
+</script>
+</body>
+</html>

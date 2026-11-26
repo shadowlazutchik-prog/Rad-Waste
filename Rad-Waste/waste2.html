@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wasteland RPG - Инфо-портал</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1c1d;
+            --panel-bg: #2b2d2f;
+            --text-main: #e7c86f;
+            --text-dark: #8a7a43;
+            --accent-red: #a8412c;
+            --accent-green: #6b8e23;
+            --border-color: #4a4c4e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            line-height: 1.4;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(26, 28, 29, 0.9), rgba(26, 28, 29, 0.9)),
+                url('data:image/svg+xml;utf8,<svg width="4" height="4" xmlns="http://www.w3.org/2000/svg"><rect width="4" height="4" fill="%231a1c1d"/><rect width="2" height="2" fill="%23222222"/></svg>');
+        }
+
+        h1, h2, h3, h4, nav a, button {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        /* CRT Scanline Effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        /* Header & Nav */
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 4px solid var(--border-color);
+            background: var(--panel-bg);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: var(--accent-red);
+            text-shadow: 2px 2px 0 #000;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        nav button {
+            background: #111;
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 10px 15px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        nav button:hover, nav button.active {
+            background: var(--text-main);
+            color: #111;
+            transform: scale(1.05);
+        }
+
+        /* Layout */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 1. MAP SECTION */
+        .map-container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hex-field {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 12px;
+            width: fit-content;
+        }
+
+        .hex-row {
+            display: flex;
+            gap: 3px;
+            margin-bottom: -22px;
+        }
+
+        .hex-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .hex-row.offset {
+            margin-left: 41px;
+        }
+
+        .hex {
+            width: 80px;
+            height: 92px;
+            background-color: #333;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            flex-shrink: 0;
+        }
+
+        .hex:hover {
+            transform: scale(1.12);
+            filter: brightness(1.35);
+            z-index: 10;
+        }
+
+        .hex.selected {
+            outline: 3px solid var(--text-main);
+            outline-offset: -3px;
+            filter: brightness(1.25);
+        }
+
+        .map-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #111;
+            border: 2px solid var(--border-color);
+            min-height: 90px;
+        }
+
+        .map-info h4 {
+            font-size: 10px;
+            color: var(--accent-red);
+            margin-bottom: 8px;
+        }
+
+        .map-info p {
+            font-size: 20px;
+            color: #aaa;
+        }
+
+        .hex-swamp { background-color: #3e5c3e; }
+        .hex-mountain { background-color: #5c5c5c; }
+        .hex-junkyard { background-color: #7a6046; }
+        .hex-ruins { background-color: #8a8a8a; }
+        .hex-base { background-color: #4a5c6b; }
+        .hex-desert { background-color: #c2a670; }
+        .hex-toxic { background-color: #5c8a3e; }
+        .hex-rad { background-color: #8a3e5c; }
+
+        .legend {
+            background: var(--panel-bg);
+            border: 4px solid var(--border-color);
+            padding: 20px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #000;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+
+        /* 2 & 3 & 5 CARDS */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 4px solid var(--border-color);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--text-main);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 0 var(--text-dark);
+        }
+
+        .pixel-img svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* PNG-иллюстрации оружия из папки Weapons */
+        .pixel-img img.wpn-sprite {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .pixel-img.has-img {
+            filter: drop-shadow(2px 4px 0 #000);
+        }
+
+        .pixel-img {
+            font-size: 60px;
+            margin-bottom: 15px;
+            filter: url('#pixelate') contrast(1.5) drop-shadow(2px 4px 0 #000);
+            display: inline-block;
+            image-rendering: pixelated;
+        }
+
+        /* Fake pixelation for emojis */
+        .pixel-img-wrapper {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 15px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #333;
+        }
+
+        .card h3 {
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: var(--accent-red);
+        }
+
+        .card p {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #aaa;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--text-main);
+            background: #111;
+            padding: 5px;
+        }
+
+        /* 4. NETWORK SECTION */
+        .network-container {
+            background: var(--panel-bg);
+            border: 4px solid var(--accent-red);
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .network-content {
+            transition: filter 0.5s;
+            font-size: 24px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .blurred {
+            filter: blur(8px);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .password-box {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .password-box input {
+            background: #111;
+            border: 2px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px;
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            width: 200px;
+        }
+
+        .password-box button {
+            background: var(--accent-red);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .password-box button:hover {
+            background: #cc4e34;
+        }
+
+        /* 6. MASTER NOTES */
+        .notes-container {
+            background: var(--panel-bg);
+            border: 4px solid var(--border-color);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .notes-status-bar {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--text-dark);
+            background: #111;
+            padding: 10px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .notes-connect {
+            background: #111;
+            border: 2px dashed var(--text-dark);
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .notes-connect p {
+            color: #aaa;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .notes-connect-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .notes-connect-btns button {
+            background: var(--accent-green);
+            color: #111;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 9px;
+        }
+
+        .notes-connect-btns button:hover {
+            filter: brightness(1.2);
+        }
+
+        .notes-input-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: stretch;
+        }
+
+        .notes-input-box textarea {
+            flex: 1;
+            background: #111;
+            border: 2px solid var(--border-color);
+            color: var(--text-main);
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            padding: 10px;
+            min-height: 90px;
+            resize: vertical;
+            line-height: 1.4;
+        }
+
+        .notes-input-box textarea:focus {
+            outline: none;
+            border-color: var(--text-main);
+        }
+
+        .note-add-btn {
+            width: 60px;
+            background: var(--accent-green);
+            color: #111;
+            border: none;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 22px;
+        }
+
+        .note-add-btn:hover {
+            filter: brightness(1.25);
+        }
+
+        .note-add-btn.editing {
+            background: #c9a227;
+        }
+
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .note-card {
+            background: #111;
+            border: 2px solid var(--border-color);
+            border-left: 6px solid var(--accent-green);
+            display: flex;
+            align-items: stretch;
+        }
+
+        .note-body {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            padding: 12px 15px;
+        }
+
+        .note-edit-btn {
+            width: 60px;
+            flex-shrink: 0;
+            background: #c9a227;
+            color: #111;
+            border: none;
+            border-left: 2px solid var(--border-color);
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 18px;
+        }
+
+        .note-edit-btn:hover {
+            filter: brightness(1.25);
+        }
+
+        .note-lead {
+            font-weight: bold;
+            color: #ff8c1a;
+        }
+
+        .note-date {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .note-text {
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #ccc;
+            font-size: 20px;
+            padding-right: 25px;
+        }
+
+        .note-del {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--accent-red);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .note-del:hover {
+            color: #fff;
+        }
+
+        .notes-empty {
+            background: #111;
+            border: 2px dashed var(--border-color);
+            padding: 20px;
+            text-align: center;
+            color: #777;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            border: 4px solid var(--text-main);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 50px rgba(231, 200, 111, 0.2);
+        }
+
+        .modal-content .pixel-img-wrapper {
+            width: 200px;
+            height: 200px;
+        }
+
+        .modal-content .pixel-img {
+            font-size: 120px;
+        }
+
+        .modal-content h2 {
+            color: var(--accent-red);
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .modal-content p {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .modal-content .stats {
+            font-size: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 30px;
+            color: var(--accent-red);
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <header>
+        <h1>WASTELAND DATA TERMINAL</h1>
+        <nav>
+            <button class="active" onclick="switchTab('map', this)">КАРТА</button>
+            <button onclick="switchTab('weapons', this)">ОРУЖИЕ</button>
+            <button onclick="switchTab('enemies', this)">ВРАГИ</button>
+            <button onclick="switchTab('network', this)">СЕТЬ</button>
+            <button onclick="switchTab('news', this)">НОВОСТИ</button>
+            <button onclick="switchTab('notes', this)">ЗАМЕТКИ</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 1. MAP -->
+        <section id="map" class="section active">
+            <h2 style="margin-bottom: 20px; color: var(--accent-red);">СЕКТОР 7-АЛЬФА</h2>
+            <div class="map-container">
+                <div class="hex-field" id="hexGrid">
+                    <!-- Generated by JS -->
+                </div>
+                <div class="legend">
+                    <div class="map-info" id="mapInfo">
+                        <h4>ВЫБЕРИТЕ ГЕКС</h4>
+                        <p>Кликните по гексу карты, чтобы получить сведения о местности.</p>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: var(--text-main);">ЛЕГЕНДА</h3>
+                    <div class="legend-item"><div class="legend-color hex-swamp"></div><div>Болото (Топь, радиация)</div></div>
+                    <div class="legend-item"><div class="legend-color hex-mountain"></div><div>Горы (Непроходимо)</div></div>
+                    <div class="legend-item"><div class="legend-color hex-junkyard"></div><div>Свалка (Лут, опасность)</div></div>
+                    <div class="legend-item"><div class="legend-color hex-ruins"></div><div>Остов города (Укрытие)</div></div>
+                    <div class="legend-item"><div class="legend-color hex-base"></div><div>Заброшенная база (Секреты)</div></div>
+                    <div class="legend-item"><div class="legend-color hex-desert"></div><div>Пустыня (Жара, открытая местность)</div></div>
+                    <div class="legend-item"><div class="legend-color hex-toxic"></div><div>Токсичное озеро (Урон)</div></div>
+                    <div class="legend-item"><div class="legend-color hex-rad"></div><div>Радиационная зона (Мутации)</div></div>
+                    <div class="map-info" id="mapInfo">
+                        <h4>ВЫБЕРИТЕ ГЕКС</h4>
+                        <p>Кликните по гексу карты, чтобы получить сведения о местности.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. WEAPONS -->
+        <section id="weapons" class="section">
+            <h2 style="margin-bottom: 20px; color: var(--accent-red);">АРСЕНАЛ</h2>
+            <div class="card-grid" id="weaponGrid">
+                <!-- Generated by JS -->
+            </div>
+        </section>
+
+        <!-- 3. ENEMIES -->
+        <section id="enemies" class="section">
+            <h2 style="margin-bottom: 20px; color: var(--accent-red);">БЕСТИАРИЙ</h2>
+            <div class="card-grid" id="enemyGrid">
+                <!-- Generated by JS -->
+            </div>
+        </section>
+
+        <!-- 4. NETWORK -->
+        <section id="network" class="section">
+            <h2 style="margin-bottom: 20px; color: var(--accent-red);">СЕТЬ ВЫЖИВШИХ</h2>
+            <div class="network-container">
+                <div class="network-content blurred" id="secretText">
+                    <p><strong>[ДАННЫЕ РАСШИФРОВАНЫ]</strong></p>
+                    <p>Внимание всем выжившим! Каравн с припасами направляется в сектор 4. Ожидаемое время прибытия: закат.</p>
+                    <p>Код доступа к бункеру "Убежище 12": <strong>DELTA-9-ECHO</strong></p>
+                    <p>Остерегайтесь Радиационных Призраков в тумане. Они реагируют на звук.</p>
+                    <p>Берегите патроны и фильтры. Удачи в Пустоши.</p>
+                </div>
+                <div class="password-box">
+                    <input type="password" id="passInput" placeholder="Введите пароль...">
+                    <button onclick="checkPassword()">ВОЙТИ</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. NEWS -->
+        <section id="news" class="section">
+            <h2 style="margin-bottom: 20px; color: var(--accent-red);">СВОДКА СОБЫТИЙ</h2>
+            <div class="card-grid" id="newsGrid">
+                <!-- Generated by JS -->
+            </div>
+        </section>
+
+        <!-- 6. MASTER NOTES -->
+        <section id="notes" class="section">
+            <h2 style="margin-bottom: 20px; color: var(--accent-red);">ЗАМЕТКИ МАСТЕРА</h2>
+            <div class="notes-container">
+                <div class="notes-status-bar" id="notesStatus">ИНИЦИАЛИЗАЦИЯ...</div>
+                <div class="notes-connect hidden" id="notesConnectBox">
+                    <p>Заметки хранятся во внешнем текстовом файле (рекомендуется <strong>notes.txt</strong> рядом с waste2.html).<br>
+                    Подключите файл один раз — дальше он будет подхватываться автоматически.</p>
+                    <div class="notes-connect-btns">
+                        <button onclick="connectOpenNotesFile()">📂 ОТКРЫТЬ ФАЙЛ</button>
+                        <button onclick="connectCreateNotesFile()">🆕 СОЗДАТЬ НОВЫЙ</button>
+                    </div>
+                </div>
+                <div class="notes-input-box">
+                    <textarea id="noteInput" placeholder="Новая заметка... (Ctrl+Enter — сохранить)"></textarea>
+                    <button class="note-add-btn" onclick="addNote()" title="Сохранить заметку">+</button>
+                </div>
+                <div class="notes-list" id="notesList"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="close-btn" onclick="closeModal(event)">X</div>
+            <div class="pixel-img-wrapper">
+                <div class="pixel-img" id="modalImg"></div>
+            </div>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDesc"></p>
+            <div class="stats" id="modalStats"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ARRAYS ---
+
+        // 20 Weapons
+        const weapons = [
+            { name: "Ржавая труба", emoji: "🔧", desc: "Тяжелая, но надежная. Найдена на свалке.", dmg: "1d6", weight: "3", range: "1" },
+            { name: "Обрез", emoji: "🔫", desc: "Самодельное оружие. Бьет больно вблизи.", dmg: "2d8", weight: "4", range: "5" },
+            { name: "Бита с гвоздями", emoji: "🏏", desc: "Любимое оружие рейдеров. Вызывает страх.", dmg: "1d8", weight: "2", range: "1" },
+            { name: "Лазерный пистолет", emoji: "🔫", desc: "Достался от древних. Энергии хватит на 10 выстрелов.", dmg: "2d6", weight: "2", range: "15" },
+            { name: "Цепная пила", emoji: "🪚", desc: "Шумная, грязная, но чертовски эффективная.", dmg: "2d10", weight: "7", range: "1" },
+            { name: "Арбалет", emoji: "🏹", desc: "Бесшумное оружие. Болты можно найти везде.", dmg: "1d10", weight: "4", range: "20" },
+            { name: "Штурмовая винтовка", emoji: "🔫", desc: "Классика довоенного времени. Требует ухода.", dmg: "2d8", weight: "5", range: "30" },
+            { name: "Огнемет", emoji: "🔥", desc: "Выжигает всё на своем пути. Осторожно, топливо!", dmg: "3d6", weight: "10", range: "5" },
+            { name: "Мачете", emoji: "🔪", desc: "Отлично рубит кусты и мутантов.", dmg: "1d8", weight: "1", range: "1" },
+            { name: "Кувалда", emoji: "🔨", desc: "Пробивает легкую броню и черепа.", dmg: "2d6", weight: "6", range: "1" },
+            { name: "Снайперская винтовка", emoji: "🎯", desc: "Точный выстрел с дальней дистанции.", dmg: "3d8", weight: "6", range: "50" },
+            { name: "Гранатомет", emoji: "💣", desc: "Решает проблемы с группами врагов. Взрывчатка!", dmg: "4d8", weight: "8", range: "25" },
+            { name: "Электрошокер", emoji: "⚡", desc: "Хорош против роботов и людей в броне.", dmg: "1d6", weight: "2", range: "1" },
+            { name: "Катана", emoji: "⚔️", desc: "Острая как бритва. Осталась от старого мира.", dmg: "2d6", weight: "3", range: "1" },
+            { name: "Пистолет-пулемет", emoji: "🔫", desc: "Скорострельный и компактный.", dmg: "1d10", weight: "3", range: "15" },
+            { name: "Копье", emoji: "🔱", desc: "Сделано из водопроводной трубы. Держит врагов на расстоянии.", dmg: "1d8", weight: "3", range: "2" },
+            { name: "Ракетница", emoji: "🚀", desc: "Тяжелое вооружение. Наносит огромный урон.", dmg: "5d10", weight: "12", range: "40" },
+            { name: "Тесак", emoji: "🪓", desc: "Тяжелый мясницкий нож. Для разделки туш.", dmg: "1d10", weight: "2", range: "1" },
+            { name: "Дробовик помповый", emoji: "🔫", desc: "Надежная классика для зачистки коридоров.", dmg: "2d10", weight: "5", range: "10" },
+            { name: "Импульсный карабин", emoji: "🔫", desc: "Высокотехнологичное оружие древних.", dmg: "3d6", weight: "4", range: "25" }
+        ];
+
+        // 20 Enemies
+        const enemies = [
+            { name: "Радтаракан", emoji: "🪳", desc: "Огромный таракан. Быстрый и мерзкий.", hp: "5", weapon: "Укус", danger: "Низкая" },
+            { name: "Рейдер", emoji: "👤", desc: "Мародер пустоши. Ищет легкую наживу.", hp: "15", weapon: "Бита", danger: "Средняя" },
+            { name: "Гуль", emoji: "🧟", desc: "Облученный человек. Медленный, но живучий.", hp: "20", weapon: "Когти", danger: "Средняя" },
+            { name: "Кибер-пес", emoji: "🐕", desc: "Сторожевая машина древних. Быстрый.", hp: "25", weapon: "Лазер", danger: "Высокая" },
+            { name: "Супермутант", emoji: "👹", desc: "Гора мышц. Очень сильный удар.", hp: "50", weapon: "Кувалда", danger: "Смертельная" },
+            { name: "Кислотный слизень", emoji: "🦠", desc: "Оставляет за собой токсичный след.", hp: "10", weapon: "Кислота", danger: "Низкая" },
+            { name: "Робот-охранник", emoji: "🤖", desc: "Охраняет старые базы. Бронирован.", hp: "40", weapon: "Пулемет", danger: "Высокая" },
+            { name: "Каннибал", emoji: "🩸", desc: "Безумный выживший. Атакует без предупреждения.", hp: "18", weapon: "Тесак", danger: "Средняя" },
+            { name: "Культист Пустоши", emoji: "🧙", desc: "Поклоняется радиации. Использует яды.", hp: "22", weapon: "Кинжал", danger: "Средняя" },
+            { name: "Радиационный призрак", emoji: "👻", desc: "Полупрозрачная сущность. Игнорирует броню.", hp: "15", weapon: "Прикосновение", danger: "Высокая" },
+            { name: "Скорпион-мутант", emoji: "🦂", desc: "Огромный ядовитый скорпион.", hp: "30", weapon: "Жало", danger: "Высокая" },
+            { name: "Бандит-снайпер", emoji: "🎯", desc: "Стреляет издалека. Опасен на открытой местности.", hp: "20", weapon: "Винтовка", danger: "Высокая" },
+            { name: "Дрон-разведчик", emoji: "🛸", desc: "Летающий робот. Сканирует местность.", hp: "10", weapon: "Нет", danger: "Низкая" },
+            { name: "Коготь Смерти", emoji: "🦖", desc: "Апекс-хищник пустоши. Убегайте.", hp: "80", weapon: "Когти", danger: "Смертельная" },
+            { name: "Плазменный элементаль", emoji: "🔵", desc: "Сгусток энергии. Наносит урон огнем.", hp: "35", weapon: "Плазма", danger: "Высокая" },
+            { name: "Зараженный солдат", emoji: "🪖", desc: "Бывший военный. Броня повреждена.", hp: "30", weapon: "Автомат", danger: "Высокая" },
+            { name: "Гигантская крыса", emoji: "🐀", desc: "Переносчик болезней.", hp: "8", weapon: "Укус", danger: "Низкая" },
+            { name: "Кибер-ниндзя", emoji: "🥷", desc: "Ассасин из старого мира. Невероятно быстр.", hp: "25", weapon: "Катана", danger: "Смертельная" },
+            { name: "Мутировавший медведь", emoji: "🐻", desc: "Огромный и злой. Нападает из засады.", hp: "60", weapon: "Когти", danger: "Смертельная" },
+            { name: "Сборщик металлолома", emoji: "🦾", desc: "Киборг, собирающий запчасти. Может быть торговцем.", hp: "40", weapon: "Дрель", danger: "Средняя" }
+        ];
+
+        // 10 News
+        const news = [
+            { title: "Найдена чистая вода", emoji: "💧", desc: "Караванщики сообщают об источнике в секторе 4. Вода не фонит." },
+            { title: "Атака на Убежище 12", emoji: "💥", desc: "Рейдеры прорвали внешний периметр. Требуется помощь." },
+            { title: "Новый вид мутантов", emoji: "👁️", desc: "Замечены трехглазые вороны в районе токсичных озер." },
+            { title: "Смена погоды", emoji: "☢️", desc: "Ожидается радиационный шторм. Рекомендуется укрыться." },
+            { title: "Найден довоенный склад", emoji: "📦", desc: "Группа сталкеров обнаружила консервы и патроны." },
+            { title: "Цены на патроны", emoji: "💰", desc: "В городе-базаре наблюдается дефицит 5.56 калибра." },
+            { title: "Миграция Когтей", emoji: "🦖", desc: "Стая Когтей Смерти движется на север. Будьте осторожны." },
+            { title: "Сигнал из Пустоши", emoji: "📡", desc: "Пойман зацикленный радиосигнал с координатами бункера." },
+            { title: "Пропала экспедиция", emoji: "🔍", desc: "Группа ученых не вышла на связь в секторе 7." },
+            { title: "Восстание роботов", emoji: "🤖", desc: "Дроны на старой фабрике перешли в агрессивный режим." }
+        ];
+
+        // --- INITIALIZATION ---
+
+        // Generate Map: 4 rows x 6 hexes, proper pointy-top hex tiling
+        const hexGrid = document.getElementById('hexGrid');
+        const terrains = ['swamp', 'mountain', 'junkyard', 'ruins', 'base', 'desert', 'toxic', 'rad'];
+        const terrainNames = { swamp: 'БОЛОТО', mountain: 'ГОРЫ', junkyard: 'СВАЛКА', ruins: 'ОСТОВ ГОРОДА', base: 'ЗАБРОШЕННАЯ БАЗА', desert: 'ПУСТЫНЯ', toxic: 'ТОКСИЧНОЕ ОЗЕРО', rad: 'РАДИАЦИОННАЯ ЗОНА' };
+        const terrainDescs = {
+            swamp: 'Топь, радиация. Перемещение замедлено вдвое.',
+            mountain: 'Непроходимый рельеф. Только обход.',
+            junkyard: 'Лут и запчасти. Высокая вероятность засады.',
+            ruins: 'Укрытие и уцелевшие постройки.',
+            base: 'Секреты довоенной эпохи. Сторожевые роботы.',
+            desert: 'Жара и открытая местность. Риск снайперского огня.',
+            toxic: 'Контакт с водой наносит урон. Нужны фильтры.',
+            rad: 'Мутации гарантированы без противогаза.'
+        };
+        const emojis = { swamp: "\u{1F33F}", mountain: "\u26F0\uFE0F", junkyard: "\u{1F6E0}\uFE0F", ruins: "\u{1F3DA}\uFE0F", base: "\u{1F3E2}", desert: "\u{1F3DC}\uFE0F", toxic: "\u2623\uFE0F", rad: "\u2622\uFE0F" };
+
+        for (let r = 0; r < 4; r++) {
+            const row = document.createElement('div');
+            row.className = 'hex-row' + (r % 2 ? ' offset' : '');
+            for (let c = 0; c < 6; c++) {
+                const hex = document.createElement('div');
+                const terrain = terrains[Math.floor(Math.random() * terrains.length)];
+                hex.className = `hex hex-${terrain}`;
+                hex.textContent = emojis[terrain];
+                hex.title = terrainNames[terrain];
+                hex.addEventListener('click', () => selectHex(hex, terrain, r, c));
+                row.appendChild(hex);
+            }
+            hexGrid.appendChild(row);
+        }
+
+        function selectHex(hexEl, terrain, r, c) {
+            document.querySelectorAll('.hex.selected').forEach(h => h.classList.remove('selected'));
+            hexEl.classList.add('selected');
+            document.getElementById('mapInfo').innerHTML =
+                `<h4>СЕКТОР ${r + 1}-${c + 1}: ${terrainNames[terrain]}</h4><p>${terrainDescs[terrain]}</p>`;
+        }
+
+        // --- SPRITES ОРУЖИЯ: внешние PNG из папки Weapons ---
+        const weaponSpriteKeys = ['pipe','obrez','bat','laserp','chainsaw','crossbow','rifle','flamethrower','machete','kuvarda','sniper','grenade','taser','katana','smg','spear','rocket','tesak','drobovik','impulse'];
+
+        function spriteSVG(key) {
+            return `<img class="wpn-sprite" src="Weapons/${key}.png" alt="">`;
+        }
+
+// Generate Cards
+        function renderCards(data, containerId, type, spriteKeys) {
+            const container = document.getElementById(containerId);
+            data.forEach((item, i) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                if (type === 'weapon') item.sprite = spriteKeys[i];
+                card.onclick = () => openModal(item, type);
+
+                let statsHTML = '';
+                if (type === 'weapon') {
+                    statsHTML = `<div class="stats"><span>УРОН: ${item.dmg}</span><span>ВЕС: ${item.weight}</span><span>ДАЛЬН: ${item.range}</span></div>`;
+                } else if (type === 'enemy') {
+                    statsHTML = `<div class="stats"><span>HP: ${item.hp}</span><span>ОРУЖ: ${item.weapon}</span><span>ОПАСН: ${item.danger}</span></div>`;
+                }
+
+                const imgHTML = item.sprite ? spriteSVG(item.sprite) : item.emoji;
+                card.innerHTML = `
+                    <div class="pixel-img-wrapper">
+                        <div class="pixel-img${item.sprite ? ' has-img' : ''}">${imgHTML}</div>
+                    </div>
+                    <h3>${item.name}</h3>
+                    <p>${item.desc}</p>
+                    ${statsHTML}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        renderCards(weapons, 'weaponGrid', 'weapon', weaponSpriteKeys);
+        renderCards(enemies, 'enemyGrid', 'enemy');
+        
+        // Render News
+        const newsGrid = document.getElementById('newsGrid');
+        news.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="pixel-img-wrapper">
+                    <div class="pixel-img">${item.emoji}</div>
+                </div>
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+            `;
+            newsGrid.appendChild(card);
+        });
+
+        // --- LOGIC ---
+
+        // Navigation
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            if (tabId === 'notes') loadNotes();
+        }
+
+        // Modal
+        function openModal(item, type) {
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modalImg');
+            modalImg.classList.toggle('has-img', !!item.sprite);
+            modalImg.innerHTML = item.sprite ? spriteSVG(item.sprite) : item.emoji;
+            document.getElementById('modalTitle').textContent = item.name;
+            document.getElementById('modalDesc').textContent = item.desc;
+            
+            let statsHTML = '';
+            if (type === 'weapon') {
+                statsHTML = `<span>УРОН: ${item.dmg}</span> <span>ВЕС: ${item.weight}</span> <span>ДАЛЬН: ${item.range}</span>`;
+            } else {
+                statsHTML = `<span>HP: ${item.hp}</span> <span>ОРУЖ: ${item.weapon}</span> <span>ОПАСН: ${item.danger}</span>`;
+            }
+            document.getElementById('modalStats').innerHTML = statsHTML;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal(event) {
+            if (event) event.preventDefault();
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Password Logic
+        function checkPassword() {
+            const pass = document.getElementById('passInput').value;
+            const secretText = document.getElementById('secretText');
+            
+            if (pass === '123') {
+                secretText.classList.remove('blurred');
+                secretText.style.color = '#6b8e23'; // Green color for success
+                // Optional: hide input after success
+                document.querySelector('.password-box').style.display = 'none';
+            } else {
+                // Shake effect or alert
+                const input = document.getElementById('passInput');
+                input.style.borderColor = 'red';
+                setTimeout(() => input.style.borderColor = '', 500);
+                alert("ДОСТУП ЗАПРЕЩЕН. НЕВЕРНЫЙ КОД.");
+            }
+        }
+
+        // Allow Enter key to submit password
+        document.getElementById('passInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // --- 6. MASTER NOTES (внешний файл рядом с waste2.html) ---
+        const NOTES_LS_KEY = 'waste_gm_notes_local';
+        const notesFsSupported = 'showOpenFilePicker' in window;
+        let notesFileHandle = null;
+        let notesData = [];
+        let notesMode = 'file'; // 'file' — внешний файл | 'local' — резервный режим памяти браузера
+        let editingNoteTs = null; // ts заметки, открытой на редактирование (null — обычный режим добавления)
+
+        // --- IndexedDB: храним ссылку (handle) на выбранный файл, чтобы подключать его автоматически ---
+        function idbOpen() {
+            return new Promise((resolve, reject) => {
+                const rq = indexedDB.open('waste_notes_db', 1);
+                rq.onupgradeneeded = () => rq.result.createObjectStore('kv');
+                rq.onsuccess = () => resolve(rq.result);
+                rq.onerror = () => reject(rq.error);
+            });
+        }
+        async function idbSet(key, val) {
+            const db = await idbOpen();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('kv', 'readwrite');
+                tx.objectStore('kv').put(val, key);
+                tx.oncomplete = () => resolve(true);
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+        async function idbGet(key) {
+            const db = await idbOpen();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('kv', 'readonly');
+                const rq = tx.objectStore('kv').get(key);
+                rq.onsuccess = () => resolve(rq.result);
+                rq.onerror = () => reject(rq.error);
+            });
+        }
+
+        function setNotesStatus(text) {
+            document.getElementById('notesStatus').textContent = text;
+        }
+        function showConnectBox(show) {
+            document.getElementById('notesConnectBox').classList.toggle('hidden', !show);
+        }
+
+        function fmtNoteDate(iso) {
+            const d = new Date(iso);
+            if (isNaN(d)) return iso;
+            const p = n => String(n).padStart(2, '0');
+            return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+        }
+
+        // Формат файла: каждая заметка начинается строкой  <<<NOTE|дата>>>
+        function parseNotesText(text) {
+            const notes = [];
+            let cur = null;
+            text.split(/\r?\n/).forEach(line => {
+                const m = line.match(/^<{3}NOTE\|\s*(.+?)\s*>{3}\s*$/);
+                if (m) {
+                    if (cur) notes.push(cur);
+                    cur = { ts: m[1], text: '' };
+                } else if (cur) {
+                    cur.text += (cur.text ? '\n' : '') + line;
+                }
+            });
+            if (cur) notes.push(cur);
+            notes.forEach(n => { n.text = n.text.replace(/\s+$/, ''); });
+            return notes;
+        }
+
+        function serializeNotes() {
+            return notesData.map(n => `<<<NOTE|${n.ts}>>>\n${n.text}\n`).join('\n');
+        }
+
+        function renderNotes() {
+            const list = document.getElementById('notesList');
+            list.innerHTML = '';
+            const items = [...notesData].reverse(); // свежие сверху
+            if (!items.length) {
+                list.innerHTML = '<div class="notes-empty">Записей пока нет. Добавьте первую заметку!</div>';
+                return;
+            }
+            items.forEach(n => {
+                const card = document.createElement('div');
+                card.className = 'note-card';
+
+                const body = document.createElement('div');
+                body.className = 'note-body';
+
+                const date = document.createElement('div');
+                date.className = 'note-date';
+                date.textContent = fmtNoteDate(n.ts);
+
+                const text = document.createElement('div');
+                text.className = 'note-text';
+                // первые три слова — жирным оранжевым
+                const m = n.text.match(/^(\S*\s+\S*\s+\S*\s?)([\s\S]*)$/);
+                const lead = document.createElement('span');
+                lead.className = 'note-lead';
+                lead.textContent = m ? m[1] : n.text;
+                text.appendChild(lead);
+                if (m && m[2]) text.appendChild(document.createTextNode(m[2]));
+
+                const del = document.createElement('button');
+                del.className = 'note-del';
+                del.textContent = '✕';
+                del.title = 'Удалить заметку';
+                del.onclick = () => deleteNote(n.ts);
+
+                const edit = document.createElement('button');
+                edit.className = 'note-edit-btn';
+                edit.textContent = '✎';
+                edit.title = 'Редактировать заметку';
+                edit.onclick = () => editNote(n.ts);
+
+                body.appendChild(date);
+                body.appendChild(text);
+                body.appendChild(del);
+
+                card.appendChild(body);
+                card.appendChild(edit);
+                list.appendChild(card);
+            });
+        }
+
+        async function ensureNotesPermission() {
+            let perm = await notesFileHandle.queryPermission({ mode: 'readwrite' });
+            if (perm !== 'granted') perm = await notesFileHandle.requestPermission({ mode: 'readwrite' });
+            return perm === 'granted';
+        }
+
+        async function readNotesFromDisk() {
+            const file = await notesFileHandle.getFile();
+            notesData = parseNotesText(await file.text());
+            renderNotes();
+        }
+
+        async function writeNotesToDisk() {
+            if (!(await ensureNotesPermission())) throw new Error('нет разрешения на запись в файл');
+            const w = await notesFileHandle.createWritable();
+            await w.write(serializeNotes());
+            await w.close();
+        }
+
+        // Резервный режим, если File System Access API недоступен (Firefox/Safari): память браузера
+        function readLocalNotes() {
+            try { return JSON.parse(localStorage.getItem(NOTES_LS_KEY) || '[]'); } catch (e) { return []; }
+        }
+        function saveLocalNotes() {
+            try { localStorage.setItem(NOTES_LS_KEY, JSON.stringify(notesData)); } catch (e) {}
+        }
+
+        // Автозагрузка заметок при каждом открытии раздела
+        async function loadNotes() {
+            if (!notesFsSupported) {
+                notesMode = 'local';
+                showConnectBox(false);
+                setNotesStatus('⚠ ФАЙЛОВЫЙ РЕЖИМ НЕДОСТУПЕН (нужен Chrome/Edge). Заметки хранятся в памяти браузера.');
+                notesData = readLocalNotes();
+                renderNotes();
+                return;
+            }
+            if (!notesFileHandle) {
+                try { notesFileHandle = await idbGet('fileHandle'); } catch (e) {}
+            }
+            if (!notesFileHandle) {
+                setNotesStatus('ФАЙЛ ЗАМЕТОК НЕ ПОДКЛЮЧЁН');
+                showConnectBox(true);
+                document.getElementById('notesList').innerHTML =
+                    '<div class="notes-empty">Подключите файл notes.txt, чтобы загрузить заметки.</div>';
+                return;
+            }
+            showConnectBox(false);
+            try {
+                if (!(await ensureNotesPermission())) {
+                    setNotesStatus('ДОСТУП К ФАЙЛУ НЕ ВЫДАН — откройте раздел ещё раз и разрешите доступ');
+                    return;
+                }
+                await readNotesFromDisk();
+                setNotesStatus('ФАЙЛ: ' + notesFileHandle.name + ' — ПОДКЛЮЧЁН');
+            } catch (e) {
+                setNotesStatus('ФАЙЛ НЕДОСТУПЕН — подключите его заново');
+                showConnectBox(true);
+            }
+        }
+
+        async function connectOpenNotesFile() {
+            if (!notesFsSupported) return;
+            try {
+                const [h] = await window.showOpenFilePicker({
+                    types: [{ description: 'Заметки мастера', accept: { 'text/plain': ['.txt'] } }],
+                    multiple: false
+                });
+                notesFileHandle = h;
+                notesMode = 'file';
+                try { await idbSet('fileHandle', h); } catch (e) {}
+                await readNotesFromDisk();
+                showConnectBox(false);
+                setNotesStatus('ФАЙЛ: ' + h.name + ' — ПОДКЛЮЧЁН');
+            } catch (e) {
+                if (e.name !== 'AbortError')
+                    setNotesStatus('ОШИБКА ПОДКЛЮЧЕНИЯ. Откройте waste2.html в Chrome/Edge и попробуйте снова. (' + e.message + ')');
+            }
+        }
+
+        async function connectCreateNotesFile() {
+            if (!notesFsSupported) return;
+            try {
+                const h = await window.showSaveFilePicker({
+                    suggestedName: 'notes.txt',
+                    types: [{ description: 'Заметки мастера', accept: { 'text/plain': ['.txt'] } }]
+                });
+                notesFileHandle = h;
+                notesMode = 'file';
+                try { await idbSet('fileHandle', h); } catch (e) {}
+                await readNotesFromDisk();
+                showConnectBox(false);
+                setNotesStatus('ФАЙЛ: ' + h.name + ' — ПОДКЛЮЧЁН');
+            } catch (e) {
+                if (e.name !== 'AbortError')
+                    setNotesStatus('ОШИБКА СОЗДАНИЯ. Откройте waste2.html в Chrome/Edge и попробуйте снова. (' + e.message + ')');
+            }
+        }
+
+        async function addNote() {
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            if (notesMode === 'local') {
+                if (editingNoteTs) {
+                    const note = notesData.find(n => n.ts === editingNoteTs);
+                    if (!note) { alert('Заметка не найдена.'); resetEditMode(); return; }
+                    note.text = text;
+                } else {
+                    notesData.push({ ts: new Date().toISOString(), text: text });
+                }
+                saveLocalNotes();
+                renderNotes();
+                resetEditMode();
+                input.value = '';
+                setNotesStatus('СОХРАНЕНО ✓ (память браузера)');
+                return;
+            }
+
+            if (!notesFileHandle) {
+                setNotesStatus('СНАЧАЛА ПОДКЛЮЧИТЕ ФАЙЛ ЗАМЕТОК');
+                showConnectBox(true);
+                return;
+            }
+            try {
+                if (!(await ensureNotesPermission())) { alert('Нет доступа к файлу заметок.'); return; }
+                await readNotesFromDisk(); // подхватываем заметки, если файл правили вручную
+                const editing = !!editingNoteTs;
+                if (editing) {
+                    const note = notesData.find(n => n.ts === editingNoteTs);
+                    if (!note) { alert('Заметка не найдена (возможно, удалена из файла).'); resetEditMode(); return; }
+                    note.text = text;
+                } else {
+                    notesData.push({ ts: new Date().toISOString(), text: text });
+                }
+                await writeNotesToDisk();
+                renderNotes();
+                resetEditMode();
+                input.value = '';
+                setNotesStatus((editing ? 'ИЗМЕНЕНИЯ СОХРАНЕНЫ ✓ (' : 'СОХРАНЕНО ✓ (') + notesFileHandle.name + ')');
+            } catch (e) {
+                alert('Не удалось сохранить заметку: ' + e.message);
+            }
+        }
+
+        async function deleteNote(ts) {
+            if (!confirm('Удалить эту заметку?')) return;
+            const idx = notesData.findIndex(n => n.ts === ts);
+            if (idx < 0) return;
+            notesData.splice(idx, 1);
+            if (editingNoteTs === ts) resetEditMode();
+            if (notesMode === 'local') { saveLocalNotes(); renderNotes(); return; }
+            try {
+                await writeNotesToDisk();
+                renderNotes();
+                setNotesStatus('УДАЛЕНО ✓ (' + notesFileHandle.name + ')');
+            } catch (e) {
+                alert('Не удалось удалить заметку: ' + e.message);
+            }
+        }
+
+        function editNote(ts) {
+            const input = document.getElementById('noteInput');
+            const addBtn = document.querySelector('.note-add-btn');
+            if (editingNoteTs === ts) { // повторный клик по ✎ — отмена редактирования
+                resetEditMode();
+                input.value = '';
+                setNotesStatus('РЕДАКТИРОВАНИЕ ОТМЕНЕНО');
+                return;
+            }
+            const note = notesData.find(n => n.ts === ts);
+            if (!note) return;
+            editingNoteTs = ts;
+            input.value = note.text;
+            input.focus();
+            addBtn.classList.add('editing');
+            addBtn.title = 'Сохранить изменения (редактирование)';
+            setNotesStatus('РЕЖИМ РЕДАКТИРОВАНИЯ — «+» сохранит изменения, повторный ✎ отменит');
+        }
+
+        function resetEditMode() {
+            editingNoteTs = null;
+            const addBtn = document.querySelector('.note-add-btn');
+            addBtn.classList.remove('editing');
+            addBtn.title = 'Сохранить заметку';
+        }
+
+        // Ctrl+Enter — быстрое сохранение заметки
+        document.getElementById('noteInput').addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'Enter') addNote();
+        });
+
+    </script>
+</body>
+</html>
