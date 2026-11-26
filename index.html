@@ -249,8 +249,8 @@
             height: 100%;
         }
 
-        /* PNG-иллюстрации оружия из папки Weapons */
-        .pixel-img img.wpn-sprite {
+        /* Иллюстрации оружия из папки Weapons */
+        .pixel-img img {
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -284,6 +284,125 @@
             font-size: 12px;
             margin-bottom: 10px;
             color: var(--accent-red);
+        }
+
+        /* === WEAPON CARDS: рамка как в инвентаре Fallout === */
+        #weaponGrid {
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 18px;
+        }
+
+        .weapon-card {
+            padding: 0;
+            text-align: left;
+            background: #1b1a16;
+            border: 4px solid #0d0c0a;
+            box-shadow: inset 0 0 0 2px #5d5a45, inset 0 0 0 4px #2a2822, 0 4px 0 #000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .weapon-card:hover,
+        .weapon-card:focus-visible {
+            border-color: var(--text-main);
+            transform: translateY(-4px);
+            box-shadow: inset 0 0 0 2px #8a8462, inset 0 0 0 4px #2a2822, 0 6px 0 #000;
+            outline: none;
+        }
+
+        .weapon-card:hover .wc-art img {
+            filter: drop-shadow(0 0 10px rgba(231, 200, 111, 0.45)) brightness(1.08);
+        }
+
+        /* Оливковая панель с артом */
+        .wc-art {
+            position: relative;
+            height: 190px;
+            margin: 6px 6px 0;
+            border: 2px solid #0a0908;
+            background:
+                radial-gradient(ellipse at 50% 40%, #55523f 0%, #423f31 45%, #2e2c24 78%, #232219 100%),
+                linear-gradient(#38362b, #2a2821);
+            box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.85), inset 0 0 0 1px #6b6750;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* потёртости на панели */
+        .wc-art::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 12% 22%, rgba(0, 0, 0, 0.35) 0 6px, transparent 7px),
+                radial-gradient(circle at 84% 70%, rgba(0, 0, 0, 0.3) 0 9px, transparent 10px),
+                radial-gradient(circle at 30% 84%, rgba(255, 255, 255, 0.05) 0 14px, transparent 15px);
+            pointer-events: none;
+        }
+
+        .wc-art img {
+            position: relative;
+            max-width: 92%;
+            max-height: 84%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.85));
+            transition: filter 0.15s;
+            image-rendering: auto;
+        }
+
+        /* Заглушка, если арта ещё нет */
+        .wc-art .wc-noimg {
+            font-size: 76px;
+            filter: drop-shadow(2px 4px 0 rgba(0, 0, 0, 0.8));
+        }
+
+        /* Стальная плашка с названием */
+        .wc-label {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            max-width: 88%;
+            padding: 4px 10px 3px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            line-height: 1.6;
+            color: #dcdcdc;
+            text-shadow: 1px 1px 0 #000, -1px 1px 0 #000;
+            background: linear-gradient(180deg, #6a7784 0%, #46515c 45%, #333c45 100%);
+            border: 2px solid #1d232a;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 2px 0 #000;
+            text-align: right;
+            letter-spacing: 0.5px;
+        }
+
+        /* На узких экранах плашка может занять всю ширину панели */
+        @media (max-width: 420px) {
+            .wc-label {
+                left: 8px;
+                text-align: center;
+            }
+            .wc-art { height: 155px; }
+        }
+
+        /* Нижняя часть: характеристики */
+        .wc-body {
+            padding: 8px 12px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .wc-body p {
+            font-size: 17px;
+            color: #9c968a;
+            margin: 0;
+        }
+
+        .wc-body .stats {
+            margin-top: 0;
         }
 
         .card p {
@@ -567,8 +686,22 @@
         }
 
         .modal-content .pixel-img-wrapper {
-            width: 200px;
-            height: 200px;
+            width: 100%;
+            max-width: 400px;
+            height: 220px;
+            background: radial-gradient(ellipse at 50% 40%, #4d4a39 0%, #38362b 60%, #24231c 100%);
+            border: 2px solid #0a0908;
+            box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.8), inset 0 0 0 1px #6b6750;
+        }
+
+        .modal-content .pixel-img.has-img {
+            filter: drop-shadow(2px 4px 0 #000);
+        }
+
+        .modal-content .pixel-img.has-img img {
+            max-width: 88%;
+            max-height: 88%;
+            object-fit: contain;
         }
 
         .modal-content .pixel-img {
@@ -833,33 +966,65 @@
                 `<h4>СЕКТОР ${r + 1}-${c + 1}: ${terrainNames[terrain]}</h4><p>${terrainDescs[terrain]}</p>`;
         }
 
-        // --- SPRITES ОРУЖИЯ: внешние PNG из папки Weapons ---
+        // --- SPRITES ОРУЖИЯ: картинки из папки Weapons/<ключ>.<ext> ---
         const weaponSpriteKeys = ['pipe','obrez','bat','laserp','chainsaw','crossbow','rifle','flamethrower','machete','kuvarda','sniper','grenade','taser','katana','smg','spear','rocket','tesak','drobovik','impulse'];
+        // Порядок поиска файла: сначала растровый арт, затем векторный, в конце — эмодзи
+        const WEAPON_IMG_EXTS = ['webp', 'png'];
 
-        function spriteSVG(key) {
-            return `<img class="wpn-sprite" src="Weapons/${key}.png" alt="">`;
+        // Пробуем расширения по очереди; если ни одного файла нет — показываем эмодзи
+        function weaponImg(key, emoji) {
+            const fb = String(emoji || '🔫').replace(/'/g, '&#39;');
+            const src = `Weapons/${key}.${WEAPON_IMG_EXTS[0]}`;
+            const chain = JSON.stringify(WEAPON_IMG_EXTS);
+            return `<img src="${src}" alt="" draggable="false" loading="lazy"
+                data-key="${key}" data-exts='${chain}' data-i="0"
+                onerror="var e=JSON.parse(this.dataset.exts),i=+this.dataset.i;if(i+1<e.length){this.dataset.i=i+1;this.src='Weapons/'+this.dataset.key+'.'+e[i+1];}else{this.outerHTML='<span class=&quot;wc-noimg&quot;>${fb}</span>';}">`;
         }
 
-// Generate Cards
-        function renderCards(data, containerId, type, spriteKeys) {
+        // Карточка оружия в стиле инвентаря Fallout: арт на оливковой панели + стальная плашка с названием
+        function renderWeaponCards(data, containerId) {
+            const container = document.getElementById(containerId);
+            data.forEach((item, i) => {
+                item.sprite = weaponSpriteKeys[i];
+                const card = document.createElement('div');
+                card.className = 'card weapon-card';
+                card.tabIndex = 0;
+                card.setAttribute('role', 'button');
+                card.setAttribute('aria-label', item.name);
+                card.onclick = () => openModal(item, 'weapon');
+                card.onkeydown = e => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(item, 'weapon'); }
+                };
+                card.innerHTML = `
+                    <div class="wc-art">
+                        ${weaponImg(item.sprite, item.emoji)}
+                        <div class="wc-label">${item.name}</div>
+                    </div>
+                    <div class="wc-body">
+                        <p>${item.desc}</p>
+                        <div class="stats"><span>УРОН: ${item.dmg}</span><span>ВЕС: ${item.weight}</span><span>ДАЛЬН: ${item.range}</span></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Generate Cards (враги)
+        function renderCards(data, containerId, type) {
             const container = document.getElementById(containerId);
             data.forEach((item, i) => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                if (type === 'weapon') item.sprite = spriteKeys[i];
                 card.onclick = () => openModal(item, type);
 
                 let statsHTML = '';
-                if (type === 'weapon') {
-                    statsHTML = `<div class="stats"><span>УРОН: ${item.dmg}</span><span>ВЕС: ${item.weight}</span><span>ДАЛЬН: ${item.range}</span></div>`;
-                } else if (type === 'enemy') {
+                if (type === 'enemy') {
                     statsHTML = `<div class="stats"><span>HP: ${item.hp}</span><span>ОРУЖ: ${item.weapon}</span><span>ОПАСН: ${item.danger}</span></div>`;
                 }
 
-                const imgHTML = item.sprite ? spriteSVG(item.sprite) : item.emoji;
                 card.innerHTML = `
                     <div class="pixel-img-wrapper">
-                        <div class="pixel-img${item.sprite ? ' has-img' : ''}">${imgHTML}</div>
+                        <div class="pixel-img">${item.emoji}</div>
                     </div>
                     <h3>${item.name}</h3>
                     <p>${item.desc}</p>
@@ -869,7 +1034,7 @@
             });
         }
 
-        renderCards(weapons, 'weaponGrid', 'weapon', weaponSpriteKeys);
+        renderWeaponCards(weapons, 'weaponGrid');
         renderCards(enemies, 'enemyGrid', 'enemy');
         
         // Render News
@@ -904,7 +1069,7 @@
             const modal = document.getElementById('modal');
             const modalImg = document.getElementById('modalImg');
             modalImg.classList.toggle('has-img', !!item.sprite);
-            modalImg.innerHTML = item.sprite ? spriteSVG(item.sprite) : item.emoji;
+            modalImg.innerHTML = item.sprite ? weaponImg(item.sprite, item.emoji) : item.emoji;
             document.getElementById('modalTitle').textContent = item.name;
             document.getElementById('modalDesc').textContent = item.desc;
             
