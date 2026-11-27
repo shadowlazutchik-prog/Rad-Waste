@@ -1,3 +1,4 @@
 .gen_raw/
+.gen_pixel/
 image-search/
 *.preview.png
