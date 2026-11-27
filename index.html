@@ -427,6 +427,12 @@
             filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.85));
         }
 
+        /* Пиксельный арт врага не сглаживается */
+        #enemyGrid .enemy-art.pixel {
+            image-rendering: pixelated;
+            filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.85));
+        }
+
         .card h3 {
             font-size: 12px;
             margin-bottom: 10px;
@@ -1006,6 +1012,11 @@
             filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.10));
         }
 
+        /* Пиксель-арт в модалке врага — без сглаживания */
+        .modal-content .pixel-img-wrapper.enemy-modal-art img.px {
+            image-rendering: pixelated;
+        }
+
         .modal-content h2 {
             color: var(--accent-red);
             margin-bottom: 20px;
@@ -1203,16 +1214,16 @@
             { name: "Каннибал", emoji: "🩸", art: "cannibal", artPixel: "cannibal-pixel", desc: "Безумный выживший. Атакует без предупреждения.", hp: "18", weapon: "Тесак", danger: "Средняя" },
             { name: "Культист Пустоши", emoji: "🧙", art: "cultist", artPixel: "cultist-pixel", desc: "Поклоняется радиации. Использует яды.", hp: "22", weapon: "Кинжал", danger: "Средняя" },
             { name: "Радиационный призрак", emoji: "👻", art: "rad-ghost", artPixel: "rad-ghost-pixel", desc: "Полупрозрачная сущность. Игнорирует броню.", hp: "15", weapon: "Прикосновение", danger: "Высокая" },
-            { name: "Скорпион-мутант", emoji: "🦂", art: "mutant-scorpion", desc: "Огромный ядовитый скорпион.", hp: "30", weapon: "Жало", danger: "Высокая" },
-            { name: "Бандит-снайпер", emoji: "🎯", art: "sniper-bandit", desc: "Стреляет издалека. Опасен на открытой местности.", hp: "20", weapon: "Винтовка", danger: "Высокая" },
-            { name: "Дрон-разведчик", emoji: "🛸", art: "scout-drone", desc: "Летающий робот. Сканирует местность.", hp: "10", weapon: "Нет", danger: "Низкая" },
-            { name: "Коготь Смерти", emoji: "🦖", art: "deathclaw", desc: "Апекс-хищник пустоши. Убегайте.", hp: "80", weapon: "Когти", danger: "Смертельная" },
-            { name: "Плазменный элементаль", emoji: "🔵", art: "plasma-elemental", desc: "Сгусток энергии. Наносит урон огнем.", hp: "35", weapon: "Плазма", danger: "Высокая" },
-            { name: "Зараженный солдат", emoji: "🪖", art: "infected-soldier", desc: "Бывший военный. Броня повреждена.", hp: "30", weapon: "Автомат", danger: "Высокая" },
-            { name: "Гигантская крыса", emoji: "🐀", art: "giant-rat", desc: "Переносчик болезней.", hp: "8", weapon: "Укус", danger: "Низкая" },
-            { name: "Кибер-ниндзя", emoji: "🥷", art: "cyber-ninja", desc: "Ассасин из старого мира. Невероятно быстр.", hp: "25", weapon: "Катана", danger: "Смертельная" },
-            { name: "Мутировавший медведь", emoji: "🐻", art: "mutant-bear", desc: "Огромный и злой. Нападает из засады.", hp: "60", weapon: "Когти", danger: "Смертельная" },
-            { name: "Сборщик металлолома", emoji: "🦾", art: "scrap-collector", desc: "Киборг, собирающий запчасти. Может быть торговцем.", hp: "40", weapon: "Дрель", danger: "Средняя" }
+            { name: "Скорпион-мутант", emoji: "🦂", art: "mutant-scorpion", artPixel: "mutant-scorpion-pixel", desc: "Огромный ядовитый скорпион.", hp: "30", weapon: "Жало", danger: "Высокая" },
+            { name: "Бандит-снайпер", emoji: "🎯", art: "sniper-bandit", artPixel: "sniper-bandit-pixel", desc: "Стреляет издалека. Опасен на открытой местности.", hp: "20", weapon: "Винтовка", danger: "Высокая" },
+            { name: "Дрон-разведчик", emoji: "🛸", art: "scout-drone", artPixel: "scout-drone-pixel", desc: "Летающий робот. Сканирует местность.", hp: "10", weapon: "Нет", danger: "Низкая" },
+            { name: "Коготь Смерти", emoji: "🦖", art: "deathclaw", artPixel: "deathclaw-pixel", desc: "Апекс-хищник пустоши. Убегайте.", hp: "80", weapon: "Когти", danger: "Смертельная" },
+            { name: "Плазменный элементаль", emoji: "🔵", art: "plasma-elemental", artPixel: "plasma-elemental-pixel", desc: "Сгусток энергии. Наносит урон огнем.", hp: "35", weapon: "Плазма", danger: "Высокая" },
+            { name: "Зараженный солдат", emoji: "🪖", art: "infected-soldier", artPixel: "infected-soldier-pixel", desc: "Бывший военный. Броня повреждена.", hp: "30", weapon: "Автомат", danger: "Высокая" },
+            { name: "Гигантская крыса", emoji: "🐀", art: "giant-rat", artPixel: "giant-rat-pixel", desc: "Переносчик болезней.", hp: "8", weapon: "Укус", danger: "Низкая" },
+            { name: "Кибер-ниндзя", emoji: "🥷", art: "cyber-ninja", artPixel: "cyber-ninja-pixel", desc: "Ассасин из старого мира. Невероятно быстр.", hp: "25", weapon: "Катана", danger: "Смертельная" },
+            { name: "Мутировавший медведь", emoji: "🐻", art: "mutant-bear", artPixel: "mutant-bear-pixel", desc: "Огромный и злой. Нападает из засады.", hp: "60", weapon: "Когти", danger: "Смертельная" },
+            { name: "Сборщик металлолома", emoji: "🦾", art: "scrap-collector", artPixel: "scrap-collector-pixel", desc: "Киборг, собирающий запчасти. Может быть торговцем.", hp: "40", weapon: "Дрель", danger: "Средняя" }
         ];
 
         // 10 News
