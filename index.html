@@ -122,6 +122,12 @@
         }
 
         .hex-field {
+            /* Pointy-top сетка: гекс w:h = 1:1.1547 (как 512x591),
+               вертикальный шаг = h*0.75, сдвиг нечётного ряда = w/2 */
+            --hex-w: 132px;
+            --hex-h: 152px;
+            --hex-overlap: calc(var(--hex-h) * -0.25);
+            --hex-offset: calc(var(--hex-w) / 2);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -129,10 +135,18 @@
             width: fit-content;
         }
 
+        @media (max-width: 720px) {
+            .hex-field {
+                --hex-w: 96px;
+                --hex-h: 111px;
+            }
+        }
+
+        /* Иллюстрированные гексы: pointy-top, встык по вертикали */
         .hex-row {
             display: flex;
-            gap: 3px;
-            margin-bottom: -22px;
+            gap: 0;
+            margin-bottom: var(--hex-overlap);
         }
 
         .hex-row:last-child {
@@ -140,33 +154,65 @@
         }
 
         .hex-row.offset {
-            margin-left: 41px;
+            margin-left: var(--hex-offset);
         }
 
         .hex {
-            width: 80px;
-            height: 92px;
-            background-color: #333;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            width: var(--hex-w);
+            height: var(--hex-h);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.18s, filter 0.18s;
+            flex-shrink: 0;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.55));
+        }
+
+        /* Арт гекса из папки Hexes/<тип>.webp */
+        .hex img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Заглушка, если арта нет */
+        .hex .hex-fallback {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            cursor: pointer;
-            transition: transform 0.2s, filter 0.2s;
-            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 46px;
+            background-color: #333;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
         }
 
         .hex:hover {
-            transform: scale(1.12);
-            filter: brightness(1.35);
+            transform: scale(1.08);
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.7)) brightness(1.15);
             z-index: 10;
         }
 
         .hex.selected {
-            outline: 3px solid var(--text-main);
-            outline-offset: -3px;
-            filter: brightness(1.25);
+            filter: drop-shadow(0 0 5px var(--text-main)) drop-shadow(0 0 2px var(--text-main)) brightness(1.15);
+        }
+
+        .hex.selected::after {
+            content: "";
+            position: absolute;
+            inset: 2px;
+            pointer-events: none;
+            background: var(--text-main);
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+                    mask-composite: exclude;
+            padding: 5px;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
         }
 
         .map-info {
@@ -188,15 +234,6 @@
             color: #aaa;
         }
 
-        .hex-swamp { background-color: #3e5c3e; }
-        .hex-mountain { background-color: #5c5c5c; }
-        .hex-junkyard { background-color: #7a6046; }
-        .hex-ruins { background-color: #8a8a8a; }
-        .hex-base { background-color: #4a5c6b; }
-        .hex-desert { background-color: #c2a670; }
-        .hex-toxic { background-color: #5c8a3e; }
-        .hex-rad { background-color: #8a3e5c; }
-
         .legend {
             background: var(--panel-bg);
             border: 4px solid var(--border-color);
@@ -214,10 +251,27 @@
             padding-bottom: 10px;
         }
 
-        .legend-color {
-            width: 30px;
-            height: 30px;
-            border: 2px solid #000;
+        /* Мини-гекс с иллюстрацией местности в легенде */
+        .legend-hex {
+            width: 40px;
+            height: 46px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+        }
+
+        .legend-hex img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            -webkit-user-drag: none;
+        }
+
+        .legend-hex-fallback {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #444;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
         }
 
@@ -859,18 +913,14 @@
                         <p>Кликните по гексу карты, чтобы получить сведения о местности.</p>
                     </div>
                     <h3 style="margin-bottom: 15px; color: var(--text-main);">ЛЕГЕНДА</h3>
-                    <div class="legend-item"><div class="legend-color hex-swamp"></div><div>Болото (Топь, радиация)</div></div>
-                    <div class="legend-item"><div class="legend-color hex-mountain"></div><div>Горы (Непроходимо)</div></div>
-                    <div class="legend-item"><div class="legend-color hex-junkyard"></div><div>Свалка (Лут, опасность)</div></div>
-                    <div class="legend-item"><div class="legend-color hex-ruins"></div><div>Остов города (Укрытие)</div></div>
-                    <div class="legend-item"><div class="legend-color hex-base"></div><div>Заброшенная база (Секреты)</div></div>
-                    <div class="legend-item"><div class="legend-color hex-desert"></div><div>Пустыня (Жара, открытая местность)</div></div>
-                    <div class="legend-item"><div class="legend-color hex-toxic"></div><div>Токсичное озеро (Урон)</div></div>
-                    <div class="legend-item"><div class="legend-color hex-rad"></div><div>Радиационная зона (Мутации)</div></div>
-                    <div class="map-info" id="mapInfo">
-                        <h4>ВЫБЕРИТЕ ГЕКС</h4>
-                        <p>Кликните по гексу карты, чтобы получить сведения о местности.</p>
-                    </div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/swamp.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Болото (Топь, радиация)</div></div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/mountain.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Горы (Непроходимо)</div></div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/junkyard.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Свалка (Лут, опасность)</div></div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/ruins.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Остов города (Укрытие)</div></div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/base.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Заброшенная база (Секреты)</div></div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/desert.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Пустыня (Жара, открытая местность)</div></div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/toxic.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Токсичное озеро (Урон)</div></div>
+                    <div class="legend-item"><div class="legend-hex"><img src="Hexes/rad.webp" alt="" draggable="false" loading="lazy" onerror="this.outerHTML='<span class=&quot;legend-hex-fallback&quot;></span>'"></div><div>Радиационная зона (Мутации)</div></div>
                 </div>
             </div>
         </section>
@@ -1043,6 +1093,13 @@
         };
         const emojis = { swamp: "\u{1F33F}", mountain: "\u26F0\uFE0F", junkyard: "\u{1F6E0}\uFE0F", ruins: "\u{1F3DA}\uFE0F", base: "\u{1F3E2}", desert: "\u{1F3DC}\uFE0F", toxic: "\u2623\uFE0F", rad: "\u2622\uFE0F" };
 
+        // Иллюстрированные гексы лежат в папке Hexes/<тип>.webp
+        function hexArt(terrain) {
+            const fb = String(emojis[terrain] || '❔').replace(/'/g, '&#39;');
+            return `<img src="Hexes/${terrain}.webp" alt="" draggable="false" loading="lazy"
+                onerror="this.outerHTML='<span class=\\'hex-fallback\\'>${fb}</span>'">`;
+        }
+
         for (let r = 0; r < 4; r++) {
             const row = document.createElement('div');
             row.className = 'hex-row' + (r % 2 ? ' offset' : '');
@@ -1050,7 +1107,7 @@
                 const hex = document.createElement('div');
                 const terrain = terrains[Math.floor(Math.random() * terrains.length)];
                 hex.className = `hex hex-${terrain}`;
-                hex.textContent = emojis[terrain];
+                hex.innerHTML = hexArt(terrain);
                 hex.title = terrainNames[terrain];
                 hex.addEventListener('click', () => selectHex(hex, terrain, r, c));
                 row.appendChild(hex);

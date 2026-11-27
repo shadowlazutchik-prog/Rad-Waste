@@ -2,3 +2,6 @@
 .gen_pixel/
 image-search/
 *.preview.png
+
+# сырьё генерации гексов
+.gen_hex/
