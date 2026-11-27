@@ -977,16 +977,15 @@
             font-size: 120px;
         }
 
-        /* Модалка врага: чистая чёрная панель с иллюстрацией */
+        /* Модалка врага: та же оливковая панель, что у оружия */
         .modal-content .pixel-img-wrapper.enemy-modal-art {
             width: 100%;
             max-width: 420px;
-            height: auto;
-            aspect-ratio: 1 / 1;
+            height: 230px;
             margin: 0 auto 18px;
-            background: #000;
-            border: 2px solid #2a2a2a;
-            box-shadow: none;
+            background: radial-gradient(ellipse at 50% 40%, #4d4a39 0%, #38362b 60%, #24231c 100%);
+            border: 2px solid #0a0908;
+            box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.8), inset 0 0 0 1px #6b6750;
             padding: 0;
         }
 
@@ -1194,16 +1193,16 @@
 
         // 20 Enemies
         const enemies = [
-            { name: "Радтаракан", emoji: "🪳", art: "rad-roach", desc: "Огромный таракан. Быстрый и мерзкий.", hp: "5", weapon: "Укус", danger: "Низкая" },
-            { name: "Рейдер", emoji: "👤", art: "raider", desc: "Мародер пустоши. Ищет легкую наживу.", hp: "15", weapon: "Бита", danger: "Средняя" },
-            { name: "Гуль", emoji: "🧟", art: "ghoul", desc: "Облученный человек. Медленный, но живучий.", hp: "20", weapon: "Когти", danger: "Средняя" },
-            { name: "Кибер-пес", emoji: "🐕", art: "cyber-dog", desc: "Сторожевая машина древних. Быстрый.", hp: "25", weapon: "Лазер", danger: "Высокая" },
-            { name: "Супермутант", emoji: "👹", art: "supermutant", desc: "Гора мышц. Очень сильный удар.", hp: "50", weapon: "Кувалда", danger: "Смертельная" },
-            { name: "Кислотный слизень", emoji: "🦠", art: "acid-slug", desc: "Оставляет за собой токсичный след.", hp: "10", weapon: "Кислота", danger: "Низкая" },
-            { name: "Робот-охранник", emoji: "🤖", art: "guard-robot", desc: "Охраняет старые базы. Бронирован.", hp: "40", weapon: "Пулемет", danger: "Высокая" },
-            { name: "Каннибал", emoji: "🩸", art: "cannibal", desc: "Безумный выживший. Атакует без предупреждения.", hp: "18", weapon: "Тесак", danger: "Средняя" },
-            { name: "Культист Пустоши", emoji: "🧙", art: "cultist", desc: "Поклоняется радиации. Использует яды.", hp: "22", weapon: "Кинжал", danger: "Средняя" },
-            { name: "Радиационный призрак", emoji: "👻", art: "rad-ghost", desc: "Полупрозрачная сущность. Игнорирует броню.", hp: "15", weapon: "Прикосновение", danger: "Высокая" },
+            { name: "Радтаракан", emoji: "🪳", art: "rad-roach", artPixel: "rad-roach-pixel", desc: "Огромный таракан. Быстрый и мерзкий.", hp: "5", weapon: "Укус", danger: "Низкая" },
+            { name: "Рейдер", emoji: "👤", art: "raider", artPixel: "raider-pixel", desc: "Мародер пустоши. Ищет легкую наживу.", hp: "15", weapon: "Бита", danger: "Средняя" },
+            { name: "Гуль", emoji: "🧟", art: "ghoul", artPixel: "ghoul-pixel", desc: "Облученный человек. Медленный, но живучий.", hp: "20", weapon: "Когти", danger: "Средняя" },
+            { name: "Кибер-пес", emoji: "🐕", art: "cyber-dog", artPixel: "cyber-dog-pixel", desc: "Сторожевая машина древних. Быстрый.", hp: "25", weapon: "Лазер", danger: "Высокая" },
+            { name: "Супермутант", emoji: "👹", art: "supermutant", artPixel: "supermutant-pixel", desc: "Гора мышц. Очень сильный удар.", hp: "50", weapon: "Кувалда", danger: "Смертельная" },
+            { name: "Кислотный слизень", emoji: "🦠", art: "acid-slug", artPixel: "acid-slug-pixel", desc: "Оставляет за собой токсичный след.", hp: "10", weapon: "Кислота", danger: "Низкая" },
+            { name: "Робот-охранник", emoji: "🤖", art: "guard-robot", artPixel: "guard-robot-pixel", desc: "Охраняет старые базы. Бронирован.", hp: "40", weapon: "Пулемет", danger: "Высокая" },
+            { name: "Каннибал", emoji: "🩸", art: "cannibal", artPixel: "cannibal-pixel", desc: "Безумный выживший. Атакует без предупреждения.", hp: "18", weapon: "Тесак", danger: "Средняя" },
+            { name: "Культист Пустоши", emoji: "🧙", art: "cultist", artPixel: "cultist-pixel", desc: "Поклоняется радиации. Использует яды.", hp: "22", weapon: "Кинжал", danger: "Средняя" },
+            { name: "Радиационный призрак", emoji: "👻", art: "rad-ghost", artPixel: "rad-ghost-pixel", desc: "Полупрозрачная сущность. Игнорирует броню.", hp: "15", weapon: "Прикосновение", danger: "Высокая" },
             { name: "Скорпион-мутант", emoji: "🦂", art: "mutant-scorpion", desc: "Огромный ядовитый скорпион.", hp: "30", weapon: "Жало", danger: "Высокая" },
             { name: "Бандит-снайпер", emoji: "🎯", art: "sniper-bandit", desc: "Стреляет издалека. Опасен на открытой местности.", hp: "20", weapon: "Винтовка", danger: "Высокая" },
             { name: "Дрон-разведчик", emoji: "🛸", art: "scout-drone", desc: "Летающий робот. Сканирует местность.", hp: "10", weapon: "Нет", danger: "Низкая" },
@@ -1381,8 +1380,10 @@
                     statsHTML = `<div class="stats"><span>HP: ${item.hp}</span><span>ОРУЖ: ${item.weapon}</span><span>ОПАСН: ${item.danger}</span></div>`;
                 }
 
-                const artHTML = item.art
-                    ? `<img class="enemy-art" src="Enemies/${item.art}.webp" alt="" draggable="false" loading="lazy"
+                const artFile = item.artPixel || item.art;
+                const artClass = item.artPixel ? 'enemy-art pixel' : 'enemy-art';
+                const artHTML = artFile
+                    ? `<img class="${artClass}" src="Enemies/${artFile}.webp" alt="" draggable="false" loading="lazy"
                          onerror="this.outerHTML='<div class=&quot;pixel-img&quot;>${item.emoji}</div>'">`
                     : `<div class="pixel-img">${item.emoji}</div>`;
                 card.innerHTML = `
@@ -1456,8 +1457,9 @@
             modalImg.classList.toggle('pixel-mode', !!item.sprite && weaponStyle === 'pixel');
 
             if (isEnemyArt) {
+                const f = item.artPixel || item.art;
                 modalImg.innerHTML =
-                    `<img src="Enemies/${item.art}.webp" alt="" draggable="false"
+                    `<img src="Enemies/${f}.webp" alt="" draggable="false" class="${item.artPixel ? 'px' : ''}"
                           onerror="this.outerHTML='${item.emoji}'">`;
             } else {
                 modalImg.innerHTML = item.sprite ? weaponImg(item.sprite, item.emoji) : item.emoji;
