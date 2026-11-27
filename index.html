@@ -355,6 +355,35 @@
             border: 2px solid #333;
         }
 
+        /* Иллюстрации врагов: тушь + акварель на бумаге (Enemies/<ключ>.webp) */
+        #enemyGrid .card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #enemyGrid .pixel-img-wrapper {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            max-height: 210px;
+            margin-bottom: 14px;
+            background: #efe8d8;
+            background-image:
+                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.55), transparent 60%),
+                radial-gradient(ellipse at 75% 85%, rgba(120,100,70,0.16), transparent 55%);
+            border: 2px solid #3b3630;
+            box-shadow: inset 0 0 22px rgba(90, 74, 50, 0.35);
+            overflow: hidden;
+        }
+
+        #enemyGrid .enemy-art {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            filter: sepia(0.06) saturate(1.02);
+        }
+
         .card h3 {
             font-size: 12px;
             margin-bottom: 10px;
@@ -1061,26 +1090,26 @@
 
         // 20 Enemies
         const enemies = [
-            { name: "Радтаракан", emoji: "🪳", desc: "Огромный таракан. Быстрый и мерзкий.", hp: "5", weapon: "Укус", danger: "Низкая" },
-            { name: "Рейдер", emoji: "👤", desc: "Мародер пустоши. Ищет легкую наживу.", hp: "15", weapon: "Бита", danger: "Средняя" },
-            { name: "Гуль", emoji: "🧟", desc: "Облученный человек. Медленный, но живучий.", hp: "20", weapon: "Когти", danger: "Средняя" },
-            { name: "Кибер-пес", emoji: "🐕", desc: "Сторожевая машина древних. Быстрый.", hp: "25", weapon: "Лазер", danger: "Высокая" },
-            { name: "Супермутант", emoji: "👹", desc: "Гора мышц. Очень сильный удар.", hp: "50", weapon: "Кувалда", danger: "Смертельная" },
-            { name: "Кислотный слизень", emoji: "🦠", desc: "Оставляет за собой токсичный след.", hp: "10", weapon: "Кислота", danger: "Низкая" },
-            { name: "Робот-охранник", emoji: "🤖", desc: "Охраняет старые базы. Бронирован.", hp: "40", weapon: "Пулемет", danger: "Высокая" },
-            { name: "Каннибал", emoji: "🩸", desc: "Безумный выживший. Атакует без предупреждения.", hp: "18", weapon: "Тесак", danger: "Средняя" },
-            { name: "Культист Пустоши", emoji: "🧙", desc: "Поклоняется радиации. Использует яды.", hp: "22", weapon: "Кинжал", danger: "Средняя" },
-            { name: "Радиационный призрак", emoji: "👻", desc: "Полупрозрачная сущность. Игнорирует броню.", hp: "15", weapon: "Прикосновение", danger: "Высокая" },
-            { name: "Скорпион-мутант", emoji: "🦂", desc: "Огромный ядовитый скорпион.", hp: "30", weapon: "Жало", danger: "Высокая" },
-            { name: "Бандит-снайпер", emoji: "🎯", desc: "Стреляет издалека. Опасен на открытой местности.", hp: "20", weapon: "Винтовка", danger: "Высокая" },
-            { name: "Дрон-разведчик", emoji: "🛸", desc: "Летающий робот. Сканирует местность.", hp: "10", weapon: "Нет", danger: "Низкая" },
-            { name: "Коготь Смерти", emoji: "🦖", desc: "Апекс-хищник пустоши. Убегайте.", hp: "80", weapon: "Когти", danger: "Смертельная" },
-            { name: "Плазменный элементаль", emoji: "🔵", desc: "Сгусток энергии. Наносит урон огнем.", hp: "35", weapon: "Плазма", danger: "Высокая" },
-            { name: "Зараженный солдат", emoji: "🪖", desc: "Бывший военный. Броня повреждена.", hp: "30", weapon: "Автомат", danger: "Высокая" },
-            { name: "Гигантская крыса", emoji: "🐀", desc: "Переносчик болезней.", hp: "8", weapon: "Укус", danger: "Низкая" },
-            { name: "Кибер-ниндзя", emoji: "🥷", desc: "Ассасин из старого мира. Невероятно быстр.", hp: "25", weapon: "Катана", danger: "Смертельная" },
-            { name: "Мутировавший медведь", emoji: "🐻", desc: "Огромный и злой. Нападает из засады.", hp: "60", weapon: "Когти", danger: "Смертельная" },
-            { name: "Сборщик металлолома", emoji: "🦾", desc: "Киборг, собирающий запчасти. Может быть торговцем.", hp: "40", weapon: "Дрель", danger: "Средняя" }
+            { name: "Радтаракан", emoji: "🪳", art: "rad-roach", desc: "Огромный таракан. Быстрый и мерзкий.", hp: "5", weapon: "Укус", danger: "Низкая" },
+            { name: "Рейдер", emoji: "👤", art: "raider", desc: "Мародер пустоши. Ищет легкую наживу.", hp: "15", weapon: "Бита", danger: "Средняя" },
+            { name: "Гуль", emoji: "🧟", art: "ghoul", desc: "Облученный человек. Медленный, но живучий.", hp: "20", weapon: "Когти", danger: "Средняя" },
+            { name: "Кибер-пес", emoji: "🐕", art: "cyber-dog", desc: "Сторожевая машина древних. Быстрый.", hp: "25", weapon: "Лазер", danger: "Высокая" },
+            { name: "Супермутант", emoji: "👹", art: "supermutant", desc: "Гора мышц. Очень сильный удар.", hp: "50", weapon: "Кувалда", danger: "Смертельная" },
+            { name: "Кислотный слизень", emoji: "🦠", art: "acid-slug", desc: "Оставляет за собой токсичный след.", hp: "10", weapon: "Кислота", danger: "Низкая" },
+            { name: "Робот-охранник", emoji: "🤖", art: "guard-robot", desc: "Охраняет старые базы. Бронирован.", hp: "40", weapon: "Пулемет", danger: "Высокая" },
+            { name: "Каннибал", emoji: "🩸", art: "cannibal", desc: "Безумный выживший. Атакует без предупреждения.", hp: "18", weapon: "Тесак", danger: "Средняя" },
+            { name: "Культист Пустоши", emoji: "🧙", art: "cultist", desc: "Поклоняется радиации. Использует яды.", hp: "22", weapon: "Кинжал", danger: "Средняя" },
+            { name: "Радиационный призрак", emoji: "👻", art: "rad-ghost", desc: "Полупрозрачная сущность. Игнорирует броню.", hp: "15", weapon: "Прикосновение", danger: "Высокая" },
+            { name: "Скорпион-мутант", emoji: "🦂", art: "mutant-scorpion", desc: "Огромный ядовитый скорпион.", hp: "30", weapon: "Жало", danger: "Высокая" },
+            { name: "Бандит-снайпер", emoji: "🎯", art: "sniper-bandit", desc: "Стреляет издалека. Опасен на открытой местности.", hp: "20", weapon: "Винтовка", danger: "Высокая" },
+            { name: "Дрон-разведчик", emoji: "🛸", art: "scout-drone", desc: "Летающий робот. Сканирует местность.", hp: "10", weapon: "Нет", danger: "Низкая" },
+            { name: "Коготь Смерти", emoji: "🦖", art: "deathclaw", desc: "Апекс-хищник пустоши. Убегайте.", hp: "80", weapon: "Когти", danger: "Смертельная" },
+            { name: "Плазменный элементаль", emoji: "🔵", art: "plasma-elemental", desc: "Сгусток энергии. Наносит урон огнем.", hp: "35", weapon: "Плазма", danger: "Высокая" },
+            { name: "Зараженный солдат", emoji: "🪖", art: "infected-soldier", desc: "Бывший военный. Броня повреждена.", hp: "30", weapon: "Автомат", danger: "Высокая" },
+            { name: "Гигантская крыса", emoji: "🐀", art: "giant-rat", desc: "Переносчик болезней.", hp: "8", weapon: "Укус", danger: "Низкая" },
+            { name: "Кибер-ниндзя", emoji: "🥷", art: "cyber-ninja", desc: "Ассасин из старого мира. Невероятно быстр.", hp: "25", weapon: "Катана", danger: "Смертельная" },
+            { name: "Мутировавший медведь", emoji: "🐻", art: "mutant-bear", desc: "Огромный и злой. Нападает из засады.", hp: "60", weapon: "Когти", danger: "Смертельная" },
+            { name: "Сборщик металлолома", emoji: "🦾", art: "scrap-collector", desc: "Киборг, собирающий запчасти. Может быть торговцем.", hp: "40", weapon: "Дрель", danger: "Средняя" }
         ];
 
         // 10 News
@@ -1248,9 +1277,13 @@
                     statsHTML = `<div class="stats"><span>HP: ${item.hp}</span><span>ОРУЖ: ${item.weapon}</span><span>ОПАСН: ${item.danger}</span></div>`;
                 }
 
+                const artHTML = item.art
+                    ? `<img class="enemy-art" src="Enemies/${item.art}.webp" alt="" draggable="false" loading="lazy"
+                         onerror="this.outerHTML='<div class=&quot;pixel-img&quot;>${item.emoji}</div>'">`
+                    : `<div class="pixel-img">${item.emoji}</div>`;
                 card.innerHTML = `
                     <div class="pixel-img-wrapper">
-                        <div class="pixel-img">${item.emoji}</div>
+                        ${artHTML}
                     </div>
                     <h3>${item.name}</h3>
                     <p>${item.desc}</p>
