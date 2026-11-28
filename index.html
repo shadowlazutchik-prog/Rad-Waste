@@ -59,6 +59,7 @@
             padding: 30px 20px;
             border-bottom: 4px solid var(--border-color);
             background: var(--panel-bg);
+            position: relative;
         }
 
         h1 {
@@ -90,6 +91,43 @@
             background: var(--text-main);
             color: #111;
             transform: scale(1.05);
+        }
+
+        /* Кнопка звука: тумблер в углу шапки */
+        .sound-toggle {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            z-index: 20;
+            background: #111;
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1;
+            cursor: pointer;
+            transition: all 0.1s;
+            opacity: 0.75;
+        }
+
+        .sound-toggle:hover {
+            opacity: 1;
+            border-color: var(--text-main);
+            transform: scale(1.05);
+        }
+
+        .sound-toggle[aria-pressed="false"] {
+            color: #6a6555;
+            border-color: #3a382f;
+            text-decoration: line-through;
+        }
+
+        @media (max-width: 760px) {
+            .sound-toggle {
+                position: static;
+                display: block;
+                margin: 0 auto 14px;
+            }
         }
 
         /* Layout */
@@ -1096,6 +1134,9 @@
 <body>
 
     <header>
+        <button class="sound-toggle" id="soundToggle" type="button"
+                aria-pressed="true" aria-label="Звук интерфейса"
+                title="Звук интерфейса: вкл/выкл">🔊 ЗВУК</button>
         <h1>WASTELAND DATA TERMINAL</h1>
         <nav>
             <button class="active" onclick="switchTab('map', this)">КАРТА</button>
@@ -1220,6 +1261,84 @@
     </div>
 
     <script>
+        // --- ЗВУК ИНТЕРФЕЙСА ---------------------------------------------------
+        // Все эффекты — короткие синтезированные сэмплы в папке Sounds/.
+        // Браузеры не дают играть звук до первого действия пользователя,
+        // поэтому предзагрузка идёт по первому клику/нажатию клавиши.
+        const SOUND_KEY = 'waste_sound_on';
+        const SOUND_FILES = {
+            tab:        'Sounds/ui-tab.mp3',
+            hex:        'Sounds/ui-hex.mp3',
+            cardOpen:   'Sounds/ui-card-open.mp3',
+            cardClose:  'Sounds/ui-card-close.mp3',
+            network:    'Sounds/network-intro.mp3'
+        };
+        const SOUND_VOLUME = { tab: 0.55, hex: 0.60, cardOpen: 0.60, cardClose: 0.55, network: 0.65 };
+
+        let soundOn = true;
+        try {
+            const saved = localStorage.getItem(SOUND_KEY);
+            if (saved === 'off') soundOn = false;
+        } catch (e) {}
+
+        const soundBank = {};
+        let audioReady = false;
+
+        function initAudio() {
+            if (audioReady) return;
+            audioReady = true;
+            Object.keys(SOUND_FILES).forEach(key => {
+                const a = new Audio(SOUND_FILES[key]);
+                a.preload = 'auto';
+                a.volume = SOUND_VOLUME[key];
+                soundBank[key] = a;
+            });
+        }
+
+        // Один и тот же эффект не должен накладываться сам на себя
+        function playSound(key) {
+            if (!soundOn) return;
+            initAudio();
+            const a = soundBank[key];
+            if (!a) return;
+            try {
+                a.currentTime = 0;
+                const p = a.play();
+                // если браузер заблокировал до первого жеста — молча ждём следующего клика
+                if (p && p.catch) p.catch(() => {});
+            } catch (e) {}
+        }
+
+        function setSoundEnabled(on) {
+            soundOn = !!on;
+            try { localStorage.setItem(SOUND_KEY, soundOn ? 'on' : 'off'); } catch (e) {}
+            const btn = document.getElementById('soundToggle');
+            if (btn) {
+                btn.setAttribute('aria-pressed', String(soundOn));
+                btn.textContent = soundOn ? '🔊 ЗВУК' : '🔇 ЗВУК';
+                btn.title = soundOn ? 'Звук интерфейса: включён' : 'Звук интерфейса: выключен';
+            }
+            if (soundOn) playSound('tab');
+        }
+
+        // Скрипт стоит в конце body, кнопка уже в разметке — инициализируем сразу
+        (function initSoundToggle() {
+            const btn = document.getElementById('soundToggle');
+            if (!btn) return;
+            btn.setAttribute('aria-pressed', String(soundOn));
+            btn.textContent = soundOn ? '🔊 ЗВУК' : '🔇 ЗВУК';
+            btn.title = soundOn ? 'Звук интерфейса: включён' : 'Звук интерфейса: выключен';
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                setSoundEnabled(!soundOn);
+            });
+        })();
+
+        // Первый жест разблокирует звук в браузере
+        ['pointerdown', 'keydown'].forEach(ev =>
+            window.addEventListener(ev, initAudio, { once: true })
+        );
+
         // --- DATA ARRAYS ---
 
         // 20 Weapons
@@ -1326,6 +1445,7 @@
         }
 
         function selectHex(hexEl, terrain, r, c) {
+            playSound('hex');
             document.querySelectorAll('.hex.selected').forEach(h => h.classList.remove('selected'));
             hexEl.classList.add('selected');
             document.getElementById('mapInfo').innerHTML =
@@ -1498,6 +1618,9 @@
             
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
+            playSound('tab');
+            // Первый вход в «СЕТЬ» — короткая заставка в духе Valve
+            if (tabId === 'network') playSound('network');
             if (tabId === 'notes') loadNotes();
         }
 
@@ -1535,12 +1658,16 @@
             }
             document.getElementById('modalStats').innerHTML = statsHTML;
             
+            playSound('cardOpen');
             modal.classList.add('active');
         }
 
         function closeModal(event) {
             if (event) event.preventDefault();
-            document.getElementById('modal').classList.remove('active');
+            const modal = document.getElementById('modal');
+            if (!modal.classList.contains('active')) return;   // клик мимо закрытой модалки
+            playSound('cardClose');
+            modal.classList.remove('active');
         }
 
         // Password Logic
